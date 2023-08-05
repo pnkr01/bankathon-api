@@ -13,7 +13,6 @@ request_model = api.model('Request', {
     'text': fields.String(required=True, description='The text data')
 })
 
-# Define the namespace for the API
 ns = api.namespace('api', description='User Request API')
 
 def generate_responses(prompt, request_id):
@@ -24,7 +23,7 @@ def generate_responses(prompt, request_id):
         }
     ]
     response = openai.ChatCompletion.create(
-        model="gpt-4",  # Replace with the correct model name
+        model="gpt-4",  
         messages=user_message
     )
     return response['choices'][0]['message']['content']
@@ -94,15 +93,11 @@ class FileUpload(Resource):
         file = args['file']
         file_type = args['file_type']
 
-        # Check if a file was selected
         if file.filename == '':
             return {'error': 'No file selected'}, 400
-
-        # Save the uploaded file temporarily
         temp_filename = 'temp_file' + os.path.splitext(file.filename)[1]
         file.save(temp_filename)
 
-        # Process the file based on the provided file type
         if file_type == 'txt':
             with open(temp_filename, 'r') as text_file:
                 extracted_text = text_file.read()
@@ -112,11 +107,9 @@ class FileUpload(Resource):
             pass
             #extracted_text = docx_to_text(temp_filename)
         else:
-            # Unsupported file type
             os.remove(temp_filename)
             return {'error': 'Unsupported file type'}, 400
 
-        # Delete the temporary file
         os.remove(temp_filename)
 
         return {'extracted_text': extracted_text}
