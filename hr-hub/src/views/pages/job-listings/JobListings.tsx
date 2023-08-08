@@ -38,7 +38,7 @@ export default function JobListings() {
 	const navigate = useNavigate();
 
 	const addAthlete = () => {
-		navigate(ROUTES.JOB_LISTINGS + '/create');
+		navigate('/' + ROUTES.JOB_LISTINGS + '/create');
 	};
 
 	useEffect(() => {
@@ -112,6 +112,9 @@ export default function JobListings() {
 									<Th color={COLORS.SECONDARY}>TITLE</Th>
 									<Th color={COLORS.SECONDARY}>ROLE</Th>
 									<Th color={COLORS.SECONDARY}>STATUS</Th>
+									<Th color={COLORS.SECONDARY} textAlign={'center'}>
+										ACTION
+									</Th>
 								</Tr>
 							</Thead>
 							<Tbody>

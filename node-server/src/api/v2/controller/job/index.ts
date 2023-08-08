@@ -249,7 +249,7 @@ export default class JobController {
 		try {
 			const job = await JobService.getServiceById(jobID);
 			const details = await job.updateJob({
-				status: JOB_STATUS.ACTIVE,
+				status: JOB_STATUS.INACTIVE,
 			});
 			return Respond({
 				res,

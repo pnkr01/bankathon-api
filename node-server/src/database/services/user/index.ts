@@ -263,4 +263,8 @@ export default class UserService {
 			kyc_status: string;
 		}[];
 	}
+
+	async getKYCDocument() {
+		return await KYCDetailDB.findOne({ user: this.user });
+	}
 }

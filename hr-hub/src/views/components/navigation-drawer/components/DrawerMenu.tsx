@@ -12,7 +12,7 @@ type Props = {
 export default function DrawerMenu({ isActive, navigateTo, icon, title }: Props) {
 	const navigate = useNavigate();
 	const handleClick = () => {
-		navigate(navigateTo);
+		navigate('/' + navigateTo);
 	};
 
 	return (

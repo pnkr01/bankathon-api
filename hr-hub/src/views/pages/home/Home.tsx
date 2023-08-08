@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationDrawer } from '../../components/navigation-drawer';
-import { Box, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { Navigate, useOutlet } from 'react-router-dom';
 import { ROUTES } from '../../../config/const';
 
@@ -10,6 +10,7 @@ export default function Home() {
 	if (!outlet) {
 		return <Navigate to={ROUTES.JOB_LISTINGS} />;
 	}
+
 	return (
 		<>
 			<NavigationDrawer />

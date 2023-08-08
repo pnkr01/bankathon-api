@@ -22,7 +22,7 @@ const initialState: JobListingState = {
 	errorSavingData: '',
 };
 
-const AthleteSlice = createSlice({
+const JobListingSlice = createSlice({
 	name: StoreNames.JOB_LISTING,
 	initialState,
 	reducers: {
@@ -85,6 +85,19 @@ const AthleteSlice = createSlice({
 		setEnhancedJD: (state, action: PayloadAction<string>) => {
 			state.jobDetail.enhanced_description = action.payload;
 		},
+		updateJob: (
+			state,
+			action: PayloadAction<{
+				id: string;
+				job: Job;
+			}>
+		) => {
+			const { id, job } = action.payload;
+
+			const index = state.jobs.findIndex((job) => job.id === id);
+			state.jobs[index] = job;
+			state.filteredJobs[index] = job;
+		},
 	},
 });
 
@@ -102,6 +115,7 @@ export const {
 	setJobDescription,
 	setSkillSet,
 	setEnhancedJD,
-} = AthleteSlice.actions;
+	updateJob,
+} = JobListingSlice.actions;
 
-export default AthleteSlice.reducer;
+export default JobListingSlice.reducer;

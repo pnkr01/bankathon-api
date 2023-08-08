@@ -106,4 +106,15 @@ const ONLY_VIDEO_ALLOWED = (
 	cb(null, true);
 };
 
-export { ONLY_IMAGES_ALLOWED as ONLY_JPG_IMAGES_ALLOWED, ONLY_VIDEO_ALLOWED };
+const ONLY_PDF_ALLOWED = (
+	req: Request,
+	file: Express.Multer.File,
+	cb: multer.FileFilterCallback
+) => {
+	if (file.mimetype !== 'application/pdf') {
+		return cb(new Error('Only PDF are allowed'));
+	}
+	cb(null, true);
+};
+
+export { ONLY_IMAGES_ALLOWED as ONLY_JPG_IMAGES_ALLOWED, ONLY_VIDEO_ALLOWED, ONLY_PDF_ALLOWED };
