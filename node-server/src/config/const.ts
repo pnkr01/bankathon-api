@@ -1,4 +1,5 @@
 export const DATABASE_URL = process.env.DATABASE_URL as string;
+export const PYTHON_SERVER_URL = process.env.PYTHON_SERVER_URL as string;
 
 export const ALLOWED_ORIGINS =
 	process.env.ALLOWED_ORIGINS !== undefined ? process.env.ALLOWED_ORIGINS.split(',') : [];

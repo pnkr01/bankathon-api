@@ -5,6 +5,8 @@ import APIError, { API_ERRORS } from '../../../../errors/api-errors';
 import { z } from 'zod';
 import JobService from '../../../../database/services/job';
 import { idValidator } from '../../../../utils/Validator';
+import ChatGPTProvider from '../../../../provider/chat-gpt';
+import InternalError, { INTERNAL_ERRORS } from '../../../../errors/internal-errors';
 
 export default class JobController {
 	private static instance: JobController;
@@ -107,14 +109,28 @@ export default class JobController {
 			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
 		}
 
-		const job = await JobService.createJob(validationResult.data);
-		return Respond({
-			res,
-			status: 201,
-			data: {
-				job,
-			},
-		});
+		try {
+			const job = await JobService.createJob(validationResult.data);
+			const enhanced_description = await ChatGPTProvider.enhanceJobDescription(
+				job.id,
+				job.description
+			);
+
+			job.jobObj.enhanced_description = enhanced_description.enhanced_description;
+			await job.jobObj.save();
+			return Respond({
+				res,
+				status: 201,
+				data: {
+					job: {
+						...job,
+						jobObj: undefined,
+					},
+				},
+			});
+		} catch (err) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR));
+		}
 	}
 
 	async updateJob(req: Request, res: Response, next: NextFunction) {
@@ -135,7 +151,18 @@ export default class JobController {
 		}
 		try {
 			const job = await JobService.getServiceById(jobID);
-			const details = await job.updateJob(validationResult.data);
+			let details = await job.updateJob({
+				...validationResult.data,
+				status: JOB_STATUS.CREATED,
+			});
+			const enhanced_description = await ChatGPTProvider.enhanceJobDescription(
+				details.id,
+				details.description
+			);
+			details = await job.updateJob({
+				enhanced_description: enhanced_description.enhanced_description,
+				status: JOB_STATUS.JD_PROCESSED,
+			});
 			return Respond({
 				res,
 				status: 200,
@@ -144,7 +171,100 @@ export default class JobController {
 				},
 			});
 		} catch (err) {
-			return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+			if (err instanceof InternalError) {
+				if (err.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+		}
+	}
+
+	async acceptEnhancedDescription(req: Request, res: Response, next: NextFunction) {
+		const { id } = req.params;
+		const [isIDValid, jobID] = idValidator(id);
+
+		if (!isIDValid) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
+		}
+		try {
+			const job = await JobService.getServiceById(jobID);
+			const details = await job.updateJob({
+				description: job.getDetails().enhanced_description,
+				status: JOB_STATUS.PROCESSED,
+			});
+			return Respond({
+				res,
+				status: 200,
+				data: {
+					job: details,
+				},
+			});
+		} catch (err) {
+			if (err instanceof InternalError) {
+				if (err.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+		}
+	}
+
+	async activate(req: Request, res: Response, next: NextFunction) {
+		const { id } = req.params;
+		const [isIDValid, jobID] = idValidator(id);
+
+		if (!isIDValid) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
+		}
+		try {
+			const job = await JobService.getServiceById(jobID);
+			const details = await job.updateJob({
+				status: JOB_STATUS.ACTIVE,
+			});
+			return Respond({
+				res,
+				status: 200,
+				data: {
+					job: details,
+				},
+			});
+		} catch (err) {
+			if (err instanceof InternalError) {
+				if (err.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+		}
+	}
+
+	async deactivate(req: Request, res: Response, next: NextFunction) {
+		const { id } = req.params;
+		const [isIDValid, jobID] = idValidator(id);
+
+		if (!isIDValid) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
+		}
+		try {
+			const job = await JobService.getServiceById(jobID);
+			const details = await job.updateJob({
+				status: JOB_STATUS.ACTIVE,
+			});
+			return Respond({
+				res,
+				status: 200,
+				data: {
+					job: details,
+				},
+			});
+		} catch (err) {
+			if (err instanceof InternalError) {
+				if (err.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
 		}
 	}
 }

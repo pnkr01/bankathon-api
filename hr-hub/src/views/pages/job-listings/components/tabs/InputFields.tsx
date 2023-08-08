@@ -27,7 +27,6 @@ export function TextInput({
 	onChange,
 	isDisabled = false,
 	isRequired = false,
-	fullWidth = false,
 }: TextInputProps) {
 	return (
 		<FormControl isRequired={isRequired}>
@@ -44,7 +43,7 @@ export function TextInput({
 					size='sm'
 					rounded='md'
 					disabled={isDisabled}
-					width={fullWidth ? '100%' : '400px'}
+					width={'full'}
 				/>
 			</VStack>
 		</FormControl>
@@ -59,8 +58,8 @@ export function TextAreaInput({
 	isRequired = false,
 }: TextInputProps) {
 	return (
-		<FormControl isRequired={isRequired}>
-			<VStack gap='1px' alignItems={'flex-start'}>
+		<FormControl isRequired={isRequired} height='full'>
+			<VStack gap='1px' alignItems={'flex-start'} height='full'>
 				<FormLabel color='gray.400' fontSize={'sm'}>
 					{label}
 				</FormLabel>
@@ -72,8 +71,9 @@ export function TextAreaInput({
 					focusBorderColor='gray.400'
 					size='sm'
 					rounded='md'
-					width={'850px'}
-					maxHeight={'250px'}
+					width={'full'}
+					height={'full'}
+					resize={'none'}
 					disabled={isDisabled}
 				/>
 			</VStack>

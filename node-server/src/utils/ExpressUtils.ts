@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IS_PRODUCTION, IS_UAT } from '../config/const';
+import { IS_PRODUCTION } from '../config/const';
 type ResponseData = {
 	res: Response;
 	status: 200 | 201 | 400 | 401 | 403 | 404 | 500;
@@ -14,7 +14,7 @@ export const Respond = ({ res, status, data }: ResponseData) => {
 			res.cookie('auth_token', auth_token, {
 				httpOnly: true,
 				sameSite: IS_PRODUCTION ? 'strict' : 'none',
-				secure: IS_PRODUCTION || IS_UAT,
+				secure: true,
 				maxAge: 1000 * 60 * 3,
 			});
 		}
@@ -23,7 +23,7 @@ export const Respond = ({ res, status, data }: ResponseData) => {
 			res.cookie('refresh_token', refresh_token, {
 				httpOnly: true,
 				sameSite: IS_PRODUCTION ? 'strict' : 'none',
-				secure: IS_PRODUCTION || IS_UAT,
+				secure: true,
 				maxAge: 1000 * 60 * 60 * 24 * 30,
 			});
 		}

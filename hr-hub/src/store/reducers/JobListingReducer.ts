@@ -3,6 +3,7 @@ import { StoreNames } from '../config';
 import JobListingState, { Job } from '../types/JobListingState';
 
 const initialState: JobListingState = {
+	isLoading: false,
 	searchText: '',
 	jobs: [],
 	filteredJobs: [],
@@ -10,10 +11,9 @@ const initialState: JobListingState = {
 		id: '',
 		name: '',
 		role: '',
-		jd_processed: false,
 		status: '',
 		job_description: '',
-		enhanced_jd: '',
+		enhanced_description: '',
 		skill_set: '',
 	},
 
@@ -27,6 +27,7 @@ const AthleteSlice = createSlice({
 	initialState,
 	reducers: {
 		reset: (state) => {
+			state.isLoading = initialState.isLoading;
 			state.searchText = initialState.searchText;
 			state.jobs = initialState.jobs;
 			state.filteredJobs = initialState.filteredJobs;
@@ -35,6 +36,9 @@ const AthleteSlice = createSlice({
 			state.errorFetchingJobs = initialState.errorFetchingJobs;
 			state.errorFetchingJobDetails = initialState.errorFetchingJobDetails;
 			state.errorSavingData = initialState.errorSavingData;
+		},
+		setLoading: (state, action: PayloadAction<boolean>) => {
+			state.isLoading = action.payload;
 		},
 		setSearchText: (state, action: PayloadAction<string>) => {
 			state.searchText = action.payload;
@@ -78,11 +82,15 @@ const AthleteSlice = createSlice({
 		setJobDescription: (state, action: PayloadAction<string>) => {
 			state.jobDetail.job_description = action.payload;
 		},
+		setEnhancedJD: (state, action: PayloadAction<string>) => {
+			state.jobDetail.enhanced_description = action.payload;
+		},
 	},
 });
 
 export const {
 	reset,
+	setLoading,
 	setSearchText,
 	setJobs,
 	setSelectedJob,
@@ -93,6 +101,7 @@ export const {
 	setRole,
 	setJobDescription,
 	setSkillSet,
+	setEnhancedJD,
 } = AthleteSlice.actions;
 
 export default AthleteSlice.reducer;

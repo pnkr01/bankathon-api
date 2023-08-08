@@ -18,16 +18,21 @@ import { useNavigate, useOutlet } from 'react-router-dom';
 import { COLORS, ROUTES } from '../../../config/const';
 import { NAVBAR_SAFE_AREA } from '../../../config/ui';
 import { StoreNames } from '../../../store';
-import { reset, setSearchText } from '../../../store/reducers/JobListingReducer';
+import {
+	reset,
+	setErrorFetchingJobs,
+	setJobs,
+	setSearchText,
+} from '../../../store/reducers/JobListingReducer';
 import StoreState from '../../../types/store';
 import { Navbar } from '../../components/navbar';
 import { AddIcon } from '@chakra-ui/icons';
 import ListingCard from './components/ListingCard';
+import JobService from '../../../services/job.service';
 
 export default function JobListings() {
-	const { searchText, errorSavingData, errorFetchingJobDetails, errorFetchingJobs } = useSelector(
-		(state: StoreState) => state[StoreNames.JOB_LISTING]
-	);
+	const { filteredJobs, searchText, errorSavingData, errorFetchingJobDetails, errorFetchingJobs } =
+		useSelector((state: StoreState) => state[StoreNames.JOB_LISTING]);
 	const dispatch = useDispatch();
 	const outlet = useOutlet();
 	const navigate = useNavigate();
@@ -38,17 +43,26 @@ export default function JobListings() {
 
 	useEffect(() => {
 		dispatch(reset());
-		// AthleteService.getInstance()
-		// 	.getAthletes()
-		// 	.then((athletes) => {
-		// 		dispatch(setAthletes(athletes));
-		// 	})
-		// 	.catch((err) => {
-		// 		dispatch(setErrorFetchingAthletes(err));
-		// 		setTimeout(() => {
-		// 			dispatch(setErrorFetchingAthletes(''));
-		// 		}, 4000);
-		// 	});
+		JobService.getInstance()
+			.getJobListings()
+			.then((result) => {
+				const jobs = result.map((job: any) => ({
+					id: job.id,
+					name: job.name,
+					role: job.role,
+					status: job.status,
+					job_description: job.description,
+					enhanced_description: job.enhanced_description,
+					skill_set: job.skills.join(','),
+				}));
+				dispatch(setJobs(jobs));
+			})
+			.catch((err) => {
+				dispatch(setErrorFetchingJobs(err));
+				setTimeout(() => {
+					dispatch(setErrorFetchingJobs(''));
+				}, 4000);
+			});
 	}, [dispatch]);
 
 	return (
@@ -97,20 +111,13 @@ export default function JobListings() {
 									</Th>
 									<Th color={COLORS.SECONDARY}>TITLE</Th>
 									<Th color={COLORS.SECONDARY}>ROLE</Th>
-									<Th color={COLORS.SECONDARY}>JD PROCESSED</Th>
 									<Th color={COLORS.SECONDARY}>STATUS</Th>
 								</Tr>
 							</Thead>
 							<Tbody>
-								<ListingCard
-									key={0}
-									id='athlete'
-									name='Openings for Frontend Developer'
-									jd_processed
-									role='Frontend Developer'
-									status='Active'
-									sno={1}
-								/>
+								{filteredJobs.map((job, index) => (
+									<ListingCard key={index} sno={index + 1} {...job} />
+								))}
 							</Tbody>
 						</Table>
 					</TableContainer>

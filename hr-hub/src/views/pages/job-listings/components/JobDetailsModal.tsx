@@ -7,29 +7,37 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
+	useSteps,
 } from '@chakra-ui/react';
-import { useNavigate, useOutlet, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ROUTES } from '../../../../config/const';
-import JobDetails from './JobDetails';
+import ModalView from './ModalView';
 import { LoadingDocsDialog } from '../../../components/dialog';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useJobDetails } from '../../../../hooks';
 import {
 	setErrorFetchingJobDetails,
+	setErrorSavingData,
+	setLoading,
 	setSelectedJob,
 } from '../../../../store/reducers/JobListingReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { StoreNames, StoreState } from '../../../../store';
+import JobService from '../../../../services/job.service';
 
 export default function JobDetailsModal() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const outlet = useOutlet();
 	const { id: listingID } = useParams();
+	const { activeStep, setActiveStep } = useSteps({ index: 0, count: 2 });
 
-	const [jobDetail, isDetailsLoading, errorLoadingDetails] = useJobDetails(
+	const [jobDetails, isDetailsLoading, errorLoadingDetails] = useJobDetails(
 		listingID && listingID !== 'create' ? listingID : null
 	);
+	const {
+		jobDetail: { name, job_description, role, skill_set },
+		isLoading,
+	} = useSelector((state: StoreState) => state[StoreNames.JOB_LISTING]);
 
 	const onClose = useCallback(() => {
 		navigate(ROUTES.JOB_LISTINGS);
@@ -45,42 +53,96 @@ export default function JobDetailsModal() {
 			onClose();
 			return;
 		}
-		dispatch(setSelectedJob(jobDetail));
-	}, [jobDetail, isDetailsLoading, dispatch, errorLoadingDetails, onClose]);
+		dispatch(setSelectedJob(jobDetails));
+	}, [jobDetails, isDetailsLoading, dispatch, errorLoadingDetails, onClose]);
 
 	const onSave = () => {
 		if (!listingID) {
 			return;
 		}
 
-		saveJobDetails(listingID);
+		if (activeStep === 0) {
+			if (listingID === 'create') {
+				dispatch(setLoading(true));
+				JobService.getInstance()
+					.createJob({
+						name,
+						role,
+						description: job_description,
+						skills: skill_set.split(','),
+					})
+					.then((result) => {
+						dispatch(
+							setSelectedJob({
+								id: result.id,
+								name: result.name,
+								role: result.role,
+								job_description: result.description,
+								enhanced_description: result.enhanced_description,
+
+								skill_set: result.skills,
+								status: result.status,
+							})
+						);
+						setActiveStep(1);
+					})
+					.catch((err) => dispatch(setErrorSavingData(err)))
+					.finally(() => dispatch(setLoading(false)));
+			} else {
+				dispatch(setLoading(true));
+				JobService.getInstance()
+					.update(listingID, {
+						name,
+						role,
+						description: job_description,
+						skills: skill_set.split(','),
+					})
+					.then((result) => {
+						dispatch(
+							setSelectedJob({
+								id: result.id,
+								name: result.name,
+								role: result.role,
+								job_description: result.description,
+								enhanced_description: result.enhanced_description,
+
+								skill_set: result.skills,
+								status: result.status,
+							})
+						);
+						setActiveStep(1);
+					})
+					.catch((err) => dispatch(setErrorSavingData(err)))
+					.finally(() => dispatch(setLoading(false)));
+			}
+		} else if (activeStep === 1) {
+			if (listingID === 'create') {
+				return;
+			}
+			dispatch(setLoading(true));
+			JobService.getInstance()
+				.activateJob(listingID)
+				.then((result) => {
+					dispatch(
+						setSelectedJob({
+							id: result.id,
+							name: result.name,
+							role: result.role,
+							job_description: result.description,
+							enhanced_description: result.enhanced_description,
+
+							skill_set: result.skills,
+							status: result.status,
+						})
+					);
+					navigate(ROUTES.JOB_LISTINGS);
+				})
+				.catch((err) => dispatch(setErrorSavingData(err)))
+				.finally(() => dispatch(setLoading(false)));
+		}
 	};
 
-	const saveJobDetails = (userID: string) => {
-		// if (userID === 'create') {
-		// 	AthleteService.getInstance()
-		// 		.create(jobDetail)
-		// 		.then(() => onClose())
-		// 		.catch((err) => {
-		// 			dispatch(setErrorSavingData(err));
-		// 			setTimeout(() => {
-		// 				dispatch(setErrorSavingData(''));
-		// 			}, 4000);
-		// 		});
-		// } else {
-		// 	AthleteService.getInstance()
-		// 		.updateAthlete(userID, jobDetail)
-		// 		.then(() => onClose())
-		// 		.catch((err) => {
-		// 			dispatch(setErrorSavingData(err));
-		// 			setTimeout(() => {
-		// 				dispatch(setErrorSavingData(''));
-		// 			}, 4000);
-		// 		});
-		// }
-	};
-
-	if (isDetailsLoading) {
+	if (isDetailsLoading || isLoading) {
 		return <LoadingDocsDialog onClose={onClose} />;
 	}
 
@@ -91,7 +153,9 @@ export default function JobDetailsModal() {
 			<ModalContent>
 				<ModalHeader />
 				<ModalCloseButton />
-				<ModalBody>{<JobDetails />}</ModalBody>
+				<ModalBody height={'70vh'}>
+					<ModalView activeStep={activeStep} setActiveStep={setActiveStep} />
+				</ModalBody>
 				<Footer onSave={onSave} onClose={onClose} />
 			</ModalContent>
 		</Modal>
@@ -110,7 +174,7 @@ const Footer = ({ onSave, onClose }: { onSave: () => void; onClose: () => void }
 				}}
 				color='white'
 			>
-				SAVE
+				SUBMIT
 			</Button>
 			<Button
 				onClick={onClose}

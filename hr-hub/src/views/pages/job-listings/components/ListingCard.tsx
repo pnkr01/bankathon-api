@@ -3,17 +3,16 @@ import React from 'react';
 import { COLORS, ROUTES } from '../../../../config/const';
 import { useNavigate } from 'react-router-dom';
 
-type AthleteCardProps = {
+type ListingCardProps = {
 	id: string;
 	sno: number;
 	name: string;
 	role: string;
-	jd_processed: boolean;
 	status: string;
 };
 
-export default function ListingCard(props: AthleteCardProps) {
-	const { id, sno, name, role, jd_processed, status } = props;
+export default function ListingCard(props: ListingCardProps) {
+	const { id, sno, name, role, status } = props;
 	const navigate = useNavigate();
 
 	const openProfile = () => {
@@ -31,7 +30,6 @@ export default function ListingCard(props: AthleteCardProps) {
 			<Td isNumeric> {sno}</Td>
 			<Td>{name}</Td>
 			<Td>{role}</Td>
-			<Td>{jd_processed ? 'Processed' : 'Processing'}</Td>
 			<Td>{status}</Td>
 		</Tr>
 	);
