@@ -10,7 +10,7 @@ const reportJSON = async (errorObj: any) => {
 };
 
 const reportServerError = async (err: ServerError) => {
-	console.log('Error Reporter: ', err.message);
+	console.log('Error Reporter: ', err?.message);
 };
 
 export default { report, reportJSON, reportServerError };
