@@ -1,5 +1,5 @@
 import openai,json
-def generate_score_reason(job_title, skills, resume_text):
+def generate_score_reason(job_description, skills, resume_text):
     user_message = [
         {"role": "system", "content": """You are a HR. You want to hire candidates for your company. you get many resume for that job description Your job is to rank the resumes according to their alignment with the job title, skills, and resumes texts. 
                 Input will be in the following format - 
@@ -9,7 +9,7 @@ def generate_score_reason(job_title, skills, resume_text):
                 Output should be in the form of json object with the following keys - 
                 score :  the score of the resume based on job title, skills, and resume text
                 """},
-            {'role': 'user','content': f"""job title - {job_title} skills -{skills} and resume text - {resume_text}"""}
+            {'role': 'user','content': f"""job description  - {job_description} skills -{skills} and resume text - {resume_text}"""}
     ]
     
     response = openai.ChatCompletion.create(
