@@ -115,6 +115,30 @@ export default function JobDetailsModal() {
 					.catch((err) => dispatch(setErrorSavingData(err)))
 					.finally(() => dispatch(setLoading(false)));
 			}
+		} else if (activeStep === 1) {
+			if (listingID === 'create') {
+				return;
+			}
+			dispatch(setLoading(true));
+			JobService.getInstance()
+				.activateJob(listingID)
+				.then((result) => {
+					dispatch(
+						setSelectedJob({
+							id: result.id,
+							name: result.name,
+							role: result.role,
+							job_description: result.description,
+							enhanced_description: result.enhanced_description,
+							jd_processed: result.status === 'JD_PROCESSED',
+							skill_set: result.skills,
+							status: result.status,
+						})
+					);
+					setActiveStep(1);
+				})
+				.catch((err) => dispatch(setErrorSavingData(err)))
+				.finally(() => dispatch(setLoading(false)));
 		}
 	};
 

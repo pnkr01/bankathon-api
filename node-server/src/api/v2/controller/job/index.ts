@@ -151,13 +151,17 @@ export default class JobController {
 		}
 		try {
 			const job = await JobService.getServiceById(jobID);
-			let details = await job.updateJob(validationResult.data);
+			let details = await job.updateJob({
+				...validationResult.data,
+				status: JOB_STATUS.CREATED,
+			});
 			const enhanced_description = await ChatGPTProvider.enhanceJobDescription(
 				details.id,
 				details.description
 			);
 			details = await job.updateJob({
 				enhanced_description: enhanced_description.enhanced_description,
+				status: JOB_STATUS.JD_PROCESSED,
 			});
 			return Respond({
 				res,
@@ -187,6 +191,65 @@ export default class JobController {
 			const job = await JobService.getServiceById(jobID);
 			const details = await job.updateJob({
 				description: job.getDetails().enhanced_description,
+				status: JOB_STATUS.PROCESSED,
+			});
+			return Respond({
+				res,
+				status: 200,
+				data: {
+					job: details,
+				},
+			});
+		} catch (err) {
+			if (err instanceof InternalError) {
+				if (err.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+		}
+	}
+
+	async activate(req: Request, res: Response, next: NextFunction) {
+		const { id } = req.params;
+		const [isIDValid, jobID] = idValidator(id);
+
+		if (!isIDValid) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
+		}
+		try {
+			const job = await JobService.getServiceById(jobID);
+			const details = await job.updateJob({
+				status: JOB_STATUS.ACTIVE,
+			});
+			return Respond({
+				res,
+				status: 200,
+				data: {
+					job: details,
+				},
+			});
+		} catch (err) {
+			if (err instanceof InternalError) {
+				if (err.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+		}
+	}
+
+	async deactivate(req: Request, res: Response, next: NextFunction) {
+		const { id } = req.params;
+		const [isIDValid, jobID] = idValidator(id);
+
+		if (!isIDValid) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
+		}
+		try {
+			const job = await JobService.getServiceById(jobID);
+			const details = await job.updateJob({
+				status: JOB_STATUS.ACTIVE,
 			});
 			return Respond({
 				res,

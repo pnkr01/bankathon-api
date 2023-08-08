@@ -2,6 +2,7 @@ import { Types } from 'mongoose';
 import InternalError, { INTERNAL_ERRORS } from '../../../errors/internal-errors';
 import IJob from '../../../types/job';
 import JobDB from '../../repository/job';
+import { JOB_STATUS } from '../../../config/const';
 
 type CreateJobProps = {
 	name: string;
@@ -12,6 +13,7 @@ type CreateJobProps = {
 
 type UpdateJobProps = Partial<CreateJobProps> & {
 	enhanced_description?: string;
+	status?: JOB_STATUS;
 };
 
 export default class JobService {
@@ -58,6 +60,9 @@ export default class JobService {
 		}
 		if (props.enhanced_description !== undefined) {
 			this.job.enhanced_description = props.enhanced_description;
+		}
+		if (props.status !== undefined) {
+			this.job.status = props.status;
 		}
 		await this.job.save();
 		return {

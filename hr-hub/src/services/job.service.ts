@@ -189,4 +189,70 @@ export default class JobService {
 			return Promise.reject(error);
 		}
 	}
+
+	async activateJob(id: string) {
+		try {
+			const { data } = await APIInstance.post(`/job/${id}/active`);
+			if (data.success) {
+				return Promise.resolve({
+					id: data.job.id,
+					name: data.job.name,
+					role: data.job.role,
+					description: data.job.description,
+					skills: data.job.skills,
+					enhanced_description: data.job.enhanced_description,
+					status: data.job.status,
+				});
+			} else {
+				throw new Error('Error updating job listing.');
+			}
+		} catch (e) {
+			let error = 'Error updating job listing.';
+			if (axios.isAxiosError(e)) {
+				if (e.code === 'ERR_NETWORK') {
+					error = 'No internet connection';
+				}
+				if (e.response) {
+					const { title } = e.response.data;
+					if (title === 'INVALID_FIELDS') {
+						error = 'Please provide all the necessary information.';
+					}
+				}
+			}
+			return Promise.reject(error);
+		}
+	}
+
+	async deactivateJob(id: string) {
+		try {
+			const { data } = await APIInstance.post(`/job/${id}/inactive`);
+			if (data.success) {
+				return Promise.resolve({
+					id: data.job.id,
+					name: data.job.name,
+					role: data.job.role,
+					description: data.job.description,
+					skills: data.job.skills,
+					enhanced_description: data.job.enhanced_description,
+					status: data.job.status,
+				});
+			} else {
+				throw new Error('Error updating job listing.');
+			}
+		} catch (e) {
+			let error = 'Error updating job listing.';
+			if (axios.isAxiosError(e)) {
+				if (e.code === 'ERR_NETWORK') {
+					error = 'No internet connection';
+				}
+				if (e.response) {
+					const { title } = e.response.data;
+					if (title === 'INVALID_FIELDS') {
+						error = 'Please provide all the necessary information.';
+					}
+				}
+			}
+			return Promise.reject(error);
+		}
+	}
 }
