@@ -39,6 +39,7 @@ export default class JobService {
 			skills: newJob.skills,
 			enhanced_description: newJob.enhanced_description,
 			status: newJob.status,
+			jobObj: newJob,
 		};
 	}
 

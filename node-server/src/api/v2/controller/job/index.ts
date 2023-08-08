@@ -5,6 +5,7 @@ import APIError, { API_ERRORS } from '../../../../errors/api-errors';
 import { z } from 'zod';
 import JobService from '../../../../database/services/job';
 import { idValidator } from '../../../../utils/Validator';
+import ChatGPTProvider from '../../../../provider/chat-gpt';
 
 export default class JobController {
 	private static instance: JobController;
@@ -107,14 +108,28 @@ export default class JobController {
 			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
 		}
 
-		const job = await JobService.createJob(validationResult.data);
-		return Respond({
-			res,
-			status: 201,
-			data: {
-				job,
-			},
-		});
+		try {
+			const job = await JobService.createJob(validationResult.data);
+			const enhanced_description = await ChatGPTProvider.enhanceJobDescription(
+				job.id,
+				job.description
+			);
+
+			job.jobObj.enhanced_description = enhanced_description.enhanced_description;
+			await job.jobObj.save();
+			return Respond({
+				res,
+				status: 201,
+				data: {
+					job: {
+						...job,
+						jobObj: undefined,
+					},
+				},
+			});
+		} catch (err) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR));
+		}
 	}
 
 	async updateJob(req: Request, res: Response, next: NextFunction) {
