@@ -1,2 +1,2 @@
-export { default as Athletes } from './JobListings';
-export { default as AthleteDetailsModal } from './components/JobDetailsModal';
+export { default as JobListings } from './JobListings';
+export { default as JobDetailsModal } from './components/JobDetailsModal';

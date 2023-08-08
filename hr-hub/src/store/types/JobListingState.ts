@@ -16,7 +16,7 @@ export type Job = {
 	jd_processed: boolean;
 	status: string;
 	job_description: string;
-	enhanced_jd: string;
+	enhanced_description: string;
 	skill_set: string;
 };
 

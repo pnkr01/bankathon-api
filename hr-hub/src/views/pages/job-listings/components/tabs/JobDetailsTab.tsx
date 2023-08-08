@@ -18,13 +18,7 @@ export default function JobDetailsTab() {
 	const { job_description, name, role, skill_set } = jobDetail;
 
 	return (
-		<Box maxHeight={'60vh'} overflow='scroll'>
-			<Box>
-				<Text fontSize='lg' fontWeight='medium' color='gray.500' pb='20px'>
-					Basic Details
-				</Text>
-			</Box>
-
+		<Box height={'70vh'} overflow='scroll'>
 			<VStack spacing='10px' alignItems='flex-start'>
 				<TextInput
 					label='Job Title'
@@ -32,7 +26,7 @@ export default function JobDetailsTab() {
 					isRequired
 					onChange={(text) => dispatch(setName(text))}
 				/>
-				<HStack spacing='50px'>
+				<HStack spacing='50px' width='full'>
 					<TextInput
 						label='Role'
 						value={role}
@@ -47,10 +41,11 @@ export default function JobDetailsTab() {
 					/>
 				</HStack>
 
-				<Box>
+				<Box width='full' height={'350px'}>
 					<TextAreaInput
 						label='Job Description'
 						value={job_description}
+						isRequired
 						onChange={(text) => dispatch(setJobDescription(text))}
 					/>
 				</Box>

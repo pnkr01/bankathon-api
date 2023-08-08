@@ -20,14 +20,18 @@ export default class JobRoute {
 	getRouter() {
 		const router = express.Router();
 
-		router.route('/:id').all(VerifyUser.AuthenticateUser).get(this.jobControllerInstance.getJob);
+		router
+			.route('/:id')
+			.all(VerifyUser.AuthenticateUser)
+			.get(this.jobControllerInstance.getJob)
+			.all(VerifyUser.IsAdmin)
+			.patch(this.jobControllerInstance.updateJob);
 
 		router
 			.route('/')
 			.all(VerifyUser.AuthenticateUser)
 			.get(this.jobControllerInstance.getJobs)
 			.all(VerifyUser.IsAdmin)
-			.patch(this.jobControllerInstance.updateJob)
 			.post(this.jobControllerInstance.createJob);
 
 		return router;

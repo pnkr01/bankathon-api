@@ -13,7 +13,7 @@ const initialState: JobListingState = {
 		jd_processed: false,
 		status: '',
 		job_description: '',
-		enhanced_jd: '',
+		enhanced_description: '',
 		skill_set: '',
 	},
 
@@ -78,6 +78,9 @@ const AthleteSlice = createSlice({
 		setJobDescription: (state, action: PayloadAction<string>) => {
 			state.jobDetail.job_description = action.payload;
 		},
+		setEnhancedJD: (state, action: PayloadAction<string>) => {
+			state.jobDetail.enhanced_description = action.payload;
+		},
 	},
 });
 
@@ -93,6 +96,7 @@ export const {
 	setRole,
 	setJobDescription,
 	setSkillSet,
+	setEnhancedJD,
 } = AthleteSlice.actions;
 
 export default AthleteSlice.reducer;
