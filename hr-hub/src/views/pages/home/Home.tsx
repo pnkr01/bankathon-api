@@ -7,9 +7,6 @@ import { ROUTES } from '../../../config/const';
 export default function Home() {
 	const outlet = useOutlet();
 
-	if (!outlet) {
-		return <Navigate to={ROUTES.JOB_LISTINGS} />;
-	}
 	return (
 		<>
 			<NavigationDrawer />
