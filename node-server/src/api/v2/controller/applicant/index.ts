@@ -87,12 +87,14 @@ export default class ApplicantController {
 	}
 
 	async getApplicants(req: Request, res: Response) {
-		const applicants = ApplicantService.getApplicants();
+		const applicants = await ApplicantService.getApplicants();
 
 		return Respond({
 			res,
 			status: 200,
-			data: { applicants },
+			data: {
+				applicants,
+			},
 		});
 	}
 }
