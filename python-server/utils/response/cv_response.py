@@ -18,7 +18,6 @@ def generate_score_reason(job_title, skills, resume_text):
     )
     return response['choices'][0]['message']['content']
 
-def generate_score(job_title,tech_stack,resume_text):
-    response_data = generate_score_reason(job_title, tech_stack, resume_text)
-    print(response_data)
+def generate_score(job_title,skills,resume_text):
+    response_data = generate_score_reason(job_title, skills, resume_text)
     return json.loads(response_data), 200
