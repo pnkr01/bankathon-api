@@ -6,8 +6,8 @@ def generate_score_reason(job_title, skills, resume_text):
                 job title - job title will be provided here
                 skills - skills will be provided here
                 resume text - resume text will be provided here
-                Output should be in the form of object with the following keys - 
-                score -  the score of the resume based on job title, skills, and resumes texts
+                Output should be in the form of json object with the following keys - 
+                score :  the score of the resume based on job title, skills, and resume text
                 """},
             {'role': 'user','content': f"""job title - {job_title} skills -{skills} and resume text - {resume_text}"""}
     ]
