@@ -1,39 +1,17 @@
 import { Types } from 'mongoose';
-import InternalError, { INTERNAL_ERRORS } from '../../../errors/internal-errors';
-import IJob from '../../../types/job';
-import JobDB from '../../repository/job';
-import { APPLICANT_STATUS, JOB_STATUS } from '../../../config/const';
+import { APPLICANT_STATUS } from '../../../config/const';
 import ApplicantDB from '../../repository/applicant';
 import DateUtils from '../../../utils/DateUtils';
 
-type CreateJobProps = {
+type RegisterApplicantProps = {
 	user: Types.ObjectId;
 	user_details: Types.ObjectId;
 	job: Types.ObjectId;
 	resume: string;
 };
 
-type UpdateJobProps = Partial<CreateJobProps> & {
-	enhanced_description?: string;
-	status?: JOB_STATUS;
-};
-
 export default class ApplicantService {
-	private job: IJob;
-
-	public constructor(job: IJob) {
-		this.job = job;
-	}
-
-	static async getServiceById(id: Types.ObjectId) {
-		const job = await JobDB.findById(id);
-		if (job === null) {
-			throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND);
-		}
-		return new ApplicantService(job);
-	}
-
-	static async register(props: CreateJobProps) {
+	static async register(props: RegisterApplicantProps) {
 		const { user, user_details, job, resume } = props;
 
 		const application = await ApplicantDB.create({
