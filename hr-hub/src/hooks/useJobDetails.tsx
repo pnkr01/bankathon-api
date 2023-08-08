@@ -9,7 +9,6 @@ export default function useJobDetails(userID: string | null) {
 		role: '',
 		job_description: '',
 		enhanced_description: '',
-		jd_processed: false,
 		status: '',
 	} as Job);
 	const [error, setError] = React.useState(null);
@@ -30,7 +29,6 @@ export default function useJobDetails(userID: string | null) {
 				job_description: job.description,
 				skill_set: job.skills.join(', '),
 				enhanced_description: job.enhanced_description,
-				jd_processed: job.status === 'JD_PROCESSED',
 				status: job.status,
 			});
 		} catch (err: any) {

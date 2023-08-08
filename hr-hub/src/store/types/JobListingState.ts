@@ -14,7 +14,6 @@ export type Job = {
 	id: string;
 	name: string;
 	role: string;
-	jd_processed: boolean;
 	status: string;
 	job_description: string;
 	enhanced_description: string;

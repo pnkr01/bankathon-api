@@ -50,7 +50,6 @@ export default function JobListings() {
 					id: job.id,
 					name: job.name,
 					role: job.role,
-					jd_processed: job.status === 'JD_PROCESSED',
 					status: job.status,
 					job_description: job.description,
 					enhanced_description: job.enhanced_description,
@@ -112,7 +111,6 @@ export default function JobListings() {
 									</Th>
 									<Th color={COLORS.SECONDARY}>TITLE</Th>
 									<Th color={COLORS.SECONDARY}>ROLE</Th>
-									<Th color={COLORS.SECONDARY}>JD PROCESSED</Th>
 									<Th color={COLORS.SECONDARY}>STATUS</Th>
 								</Tr>
 							</Thead>

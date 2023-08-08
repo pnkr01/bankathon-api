@@ -11,7 +11,6 @@ const initialState: JobListingState = {
 		id: '',
 		name: '',
 		role: '',
-		jd_processed: false,
 		status: '',
 		job_description: '',
 		enhanced_description: '',

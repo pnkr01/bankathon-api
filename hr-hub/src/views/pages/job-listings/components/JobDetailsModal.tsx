@@ -79,7 +79,7 @@ export default function JobDetailsModal() {
 								role: result.role,
 								job_description: result.description,
 								enhanced_description: result.enhanced_description,
-								jd_processed: result.status === 'JD_PROCESSED',
+
 								skill_set: result.skills,
 								status: result.status,
 							})
@@ -105,7 +105,7 @@ export default function JobDetailsModal() {
 								role: result.role,
 								job_description: result.description,
 								enhanced_description: result.enhanced_description,
-								jd_processed: result.status === 'JD_PROCESSED',
+
 								skill_set: result.skills,
 								status: result.status,
 							})
@@ -130,12 +130,12 @@ export default function JobDetailsModal() {
 							role: result.role,
 							job_description: result.description,
 							enhanced_description: result.enhanced_description,
-							jd_processed: result.status === 'JD_PROCESSED',
+
 							skill_set: result.skills,
 							status: result.status,
 						})
 					);
-					setActiveStep(1);
+					navigate(ROUTES.JOB_LISTINGS);
 				})
 				.catch((err) => dispatch(setErrorSavingData(err)))
 				.finally(() => dispatch(setLoading(false)));

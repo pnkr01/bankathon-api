@@ -54,7 +54,7 @@ export default function EnhancedJD() {
 						role: result.role,
 						job_description: result.description,
 						enhanced_description: result.enhanced_description,
-						jd_processed: result.status === 'JD_PROCESSED',
+
 						skill_set: result.skills,
 						status: result.status,
 					})
