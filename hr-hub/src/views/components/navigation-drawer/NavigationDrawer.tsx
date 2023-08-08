@@ -1,7 +1,7 @@
 import { Box, VStack } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { JOB_OFFER, USERS } from '../../../assets/Images';
+import { APPLICANTS, JOB_OFFER } from '../../../assets/Images';
 import { COLORS, ROUTES } from '../../../config/const';
 import Divider from './components/Divider';
 import DrawerMenu from './components/DrawerMenu';
@@ -12,18 +12,10 @@ export default function NavigationDrawer() {
 
 	const activeMenu = useMemo(() => {
 		const path = location.pathname;
-		if (path.startsWith(ROUTES.JOB_LISTINGS)) {
+		if (path.includes(ROUTES.JOB_LISTINGS)) {
 			return ROUTES.JOB_LISTINGS;
-		} else if (path.startsWith(ROUTES.USERS)) {
-			return ROUTES.USERS;
-		} else if (path.startsWith(ROUTES.SMART_CONTRACT)) {
-			return ROUTES.SMART_CONTRACT;
-		} else if (path.startsWith(ROUTES.INVESTMENT)) {
-			return ROUTES.INVESTMENT;
-		} else if (path.startsWith(ROUTES.NOTES)) {
-			return ROUTES.NOTES;
-		} else if (path.startsWith(ROUTES.BUGS)) {
-			return ROUTES.BUGS;
+		} else if (path.includes(ROUTES.APPLICANTS)) {
+			return ROUTES.APPLICANTS;
 		}
 	}, [location.pathname]);
 
@@ -47,43 +39,15 @@ export default function NavigationDrawer() {
 
 					<DrawerMenu
 						icon={JOB_OFFER}
-						title='Job Listings'
+						title='Job Listing'
 						isActive={activeMenu === ROUTES.JOB_LISTINGS}
 						navigateTo={ROUTES.JOB_LISTINGS}
 					/>
 					<DrawerMenu
-						icon={USERS}
-						title='Users'
-						isActive={activeMenu === ROUTES.USERS}
-						navigateTo={ROUTES.USERS}
-					/>
-					{/* todo: change icon for smart contract */}
-					<DrawerMenu
-						icon={USERS}
-						title='Smart Contract'
-						isActive={activeMenu === ROUTES.SMART_CONTRACT}
-						navigateTo={ROUTES.SMART_CONTRACT}
-					/>
-					{/* todo: change icon for Investment */}
-					<DrawerMenu
-						icon={USERS}
-						title='Investment'
-						isActive={activeMenu === ROUTES.INVESTMENT}
-						navigateTo={ROUTES.INVESTMENT}
-					/>
-					{/* todo: change icon for Notes */}
-					<DrawerMenu
-						icon={USERS}
-						title='Notes'
-						isActive={activeMenu === ROUTES.NOTES}
-						navigateTo={ROUTES.NOTES}
-					/>
-					{/* todo: change icon for bugs */}
-					<DrawerMenu
-						icon={USERS}
-						title='Bugs'
-						isActive={activeMenu === ROUTES.BUGS}
-						navigateTo={ROUTES.BUGS}
+						icon={APPLICANTS}
+						title='Applicants'
+						isActive={activeMenu === ROUTES.APPLICANTS}
+						navigateTo={ROUTES.APPLICANTS}
 					/>
 				</VStack>
 			</Box>

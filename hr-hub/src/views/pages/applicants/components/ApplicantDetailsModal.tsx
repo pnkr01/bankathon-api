@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { StoreNames, StoreState } from '../../../../store';
 import JobService from '../../../../services/job.service';
 
-export default function JobDetailsModal() {
+export default function ApplicantDetailsModal() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { id: listingID } = useParams();

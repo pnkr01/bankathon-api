@@ -7,7 +7,7 @@ import { JobDetailsModal, JobListings } from './views/pages/job-listings';
 import { HomePage } from './views/pages/home';
 import { LoginPage } from './views/pages/login';
 import ProtectedRoute from './views/components/protected-route';
-import { Notes, NotesModel } from './views/pages/notes';
+import { Applicants } from './views/pages/applicants';
 
 function App() {
 	return (
@@ -28,8 +28,8 @@ function App() {
 								<Route path={ROUTES.JOB_LISTINGS} element={<JobListings />}>
 									<Route path=':id' element={<JobDetailsModal />} />
 								</Route>
-								<Route path={ROUTES.NOTES} element={<Notes />}>
-									<Route path=':id' element={<NotesModel />} />
+								<Route path={ROUTES.APPLICANTS} element={<Applicants />}>
+									{/* <Route path=':id' element={<JobDetailsModal />} /> */}
 								</Route>
 							</Route>
 

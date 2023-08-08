@@ -20,24 +20,8 @@ export const COLORS = {
 export const ROUTES = {
 	HOME: '/',
 	LOGIN: '/login',
-	JOB_LISTINGS: '/job-listings',
-	USERS: '/u',
-	SMART_CONTRACT: '/smart-contract',
-	INVESTMENT: '/investment',
-	NOTES: '/notes',
-	BUGS: '/bugs',
-
-	PHOTOS: 'photos',
-	VIDEOS: 'videos',
-
-	KYC_VIEWER: '/kyc-viewer',
-
-	ATHLETE_PHOTOS_GALLERY: (id: string) => {
-		return `/a/${id}/photos`;
-	},
-	ATHLETE_VIDEOS_GALLERY: (id: string) => {
-		return `/a/${id}/photos`;
-	},
+	JOB_LISTINGS: 'job-listings',
+	APPLICANTS: 'applicants',
 };
 
 export const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
