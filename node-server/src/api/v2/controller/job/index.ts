@@ -6,6 +6,7 @@ import { z } from 'zod';
 import JobService from '../../../../database/services/job';
 import { idValidator } from '../../../../utils/Validator';
 import ChatGPTProvider from '../../../../provider/chat-gpt';
+import InternalError, { INTERNAL_ERRORS } from '../../../../errors/internal-errors';
 
 export default class JobController {
 	private static instance: JobController;
@@ -150,7 +151,14 @@ export default class JobController {
 		}
 		try {
 			const job = await JobService.getServiceById(jobID);
-			const details = await job.updateJob(validationResult.data);
+			let details = await job.updateJob(validationResult.data);
+			const enhanced_description = await ChatGPTProvider.enhanceJobDescription(
+				details.id,
+				details.description
+			);
+			details = await job.updateJob({
+				enhanced_description: enhanced_description.enhanced_description,
+			});
 			return Respond({
 				res,
 				status: 200,
@@ -159,7 +167,12 @@ export default class JobController {
 				},
 			});
 		} catch (err) {
-			return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+			if (err instanceof InternalError) {
+				if (err.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR));
 		}
 	}
 }
