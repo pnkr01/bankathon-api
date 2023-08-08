@@ -70,7 +70,7 @@ export default function JobDetailsModal() {
 						description: job_description,
 						skills: skill_set.split(','),
 					})
-					.then((result) =>
+					.then((result) => {
 						dispatch(
 							setSelectedJob({
 								id: result.id,
@@ -82,8 +82,9 @@ export default function JobDetailsModal() {
 								skill_set: result.skills,
 								status: result.status,
 							})
-						)
-					)
+						);
+						setActiveStep(1);
+					})
 					.catch((err) => dispatch(setErrorSavingData(err)))
 					.finally(() => setLoading(false));
 			} else {
@@ -95,7 +96,7 @@ export default function JobDetailsModal() {
 						description: job_description,
 						skills: skill_set.split(','),
 					})
-					.then((result) =>
+					.then((result) => {
 						dispatch(
 							setSelectedJob({
 								id: result.id,
@@ -107,8 +108,9 @@ export default function JobDetailsModal() {
 								skill_set: result.skills,
 								status: result.status,
 							})
-						)
-					)
+						);
+						setActiveStep(1);
+					})
 					.catch((err) => dispatch(setErrorSavingData(err)))
 					.finally(() => setLoading(false));
 			}

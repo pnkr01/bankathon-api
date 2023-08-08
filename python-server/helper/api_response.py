@@ -1,6 +1,5 @@
-import json
-def ApiResponse(status,data):
-    response  = json.dumps(data)
-    status = status
-    mimetype = 'application/json'
-    return (response, status, mimetype)
+from flask import jsonify
+
+
+def ApiResponse(status, data):
+    return data, status

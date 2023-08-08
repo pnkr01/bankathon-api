@@ -172,7 +172,36 @@ export default class JobController {
 					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
 				}
 			}
-			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR));
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
+		}
+	}
+
+	async acceptEnhancedDescription(req: Request, res: Response, next: NextFunction) {
+		const { id } = req.params;
+		const [isIDValid, jobID] = idValidator(id);
+
+		if (!isIDValid) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
+		}
+		try {
+			const job = await JobService.getServiceById(jobID);
+			const details = await job.updateJob({
+				description: job.getDetails().enhanced_description,
+			});
+			return Respond({
+				res,
+				status: 200,
+				data: {
+					job: details,
+				},
+			});
+		} catch (err) {
+			if (err instanceof InternalError) {
+				if (err.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
 		}
 	}
 }
