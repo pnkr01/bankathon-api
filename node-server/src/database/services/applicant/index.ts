@@ -29,6 +29,7 @@ export default class ApplicantService {
 			job: application.job,
 			resume: application.resume,
 			status: application.status,
+			applicationDoc: application,
 		};
 	}
 	static async getApplicants() {

@@ -20,10 +20,8 @@ export default async function analyzeCV({ job_description, skills, resume_file }
 		const { data } = await axios.post(`${PYTHON_SERVER_URL}/analyze_cv`, formData, {
 			headers: formData.getHeaders(),
 		});
-		return Promise.resolve({
-			request_id: data.request_id,
-			enhanced_description: data.enhanced_jd,
-		});
+
+		return Promise.resolve(Number(data['score']));
 	} catch (e) {
 		return Promise.reject(new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR));
 	}

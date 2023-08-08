@@ -9,4 +9,5 @@ export default interface IApplicant extends Document {
 	job: IJob;
 	resume: string;
 	status: APPLICANT_STATUS;
+	score: number;
 }
