@@ -18,6 +18,7 @@ import { useJobDetails } from '../../../../hooks';
 import {
 	setErrorFetchingJobDetails,
 	setErrorSavingData,
+	setLoading,
 	setSelectedJob,
 } from '../../../../store/reducers/JobListingReducer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,7 +29,6 @@ export default function JobDetailsModal() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { id: listingID } = useParams();
-	const [isLoading, setLoading] = useState(false);
 	const { activeStep, setActiveStep } = useSteps({ index: 0, count: 2 });
 
 	const [jobDetails, isDetailsLoading, errorLoadingDetails] = useJobDetails(
@@ -36,6 +36,7 @@ export default function JobDetailsModal() {
 	);
 	const {
 		jobDetail: { name, job_description, role, skill_set },
+		isLoading,
 	} = useSelector((state: StoreState) => state[StoreNames.JOB_LISTING]);
 
 	const onClose = useCallback(() => {
@@ -62,7 +63,7 @@ export default function JobDetailsModal() {
 
 		if (activeStep === 0) {
 			if (listingID === 'create') {
-				setLoading(true);
+				dispatch(setLoading(true));
 				JobService.getInstance()
 					.createJob({
 						name,
@@ -86,9 +87,9 @@ export default function JobDetailsModal() {
 						setActiveStep(1);
 					})
 					.catch((err) => dispatch(setErrorSavingData(err)))
-					.finally(() => setLoading(false));
+					.finally(() => dispatch(setLoading(false)));
 			} else {
-				setLoading(true);
+				dispatch(setLoading(true));
 				JobService.getInstance()
 					.update(listingID, {
 						name,
@@ -112,7 +113,7 @@ export default function JobDetailsModal() {
 						setActiveStep(1);
 					})
 					.catch((err) => dispatch(setErrorSavingData(err)))
-					.finally(() => setLoading(false));
+					.finally(() => dispatch(setLoading(false)));
 			}
 		}
 	};
@@ -129,7 +130,7 @@ export default function JobDetailsModal() {
 				<ModalHeader />
 				<ModalCloseButton />
 				<ModalBody height={'70vh'}>
-					{<ModalView activeStep={activeStep} setActiveStep={setActiveStep} />}
+					<ModalView activeStep={activeStep} setActiveStep={setActiveStep} />
 				</ModalBody>
 				<Footer onSave={onSave} onClose={onClose} />
 			</ModalContent>

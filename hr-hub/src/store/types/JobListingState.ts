@@ -1,4 +1,5 @@
 type JobListingState = {
+	isLoading: boolean;
 	searchText: string;
 	jobs: Job[];
 	filteredJobs: Job[];

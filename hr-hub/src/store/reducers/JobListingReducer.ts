@@ -3,6 +3,7 @@ import { StoreNames } from '../config';
 import JobListingState, { Job } from '../types/JobListingState';
 
 const initialState: JobListingState = {
+	isLoading: false,
 	searchText: '',
 	jobs: [],
 	filteredJobs: [],
@@ -27,6 +28,7 @@ const AthleteSlice = createSlice({
 	initialState,
 	reducers: {
 		reset: (state) => {
+			state.isLoading = initialState.isLoading;
 			state.searchText = initialState.searchText;
 			state.jobs = initialState.jobs;
 			state.filteredJobs = initialState.filteredJobs;
@@ -35,6 +37,9 @@ const AthleteSlice = createSlice({
 			state.errorFetchingJobs = initialState.errorFetchingJobs;
 			state.errorFetchingJobDetails = initialState.errorFetchingJobDetails;
 			state.errorSavingData = initialState.errorSavingData;
+		},
+		setLoading: (state, action: PayloadAction<boolean>) => {
+			state.isLoading = action.payload;
 		},
 		setSearchText: (state, action: PayloadAction<string>) => {
 			state.searchText = action.payload;
@@ -86,6 +91,7 @@ const AthleteSlice = createSlice({
 
 export const {
 	reset,
+	setLoading,
 	setSearchText,
 	setJobs,
 	setSelectedJob,

@@ -23,11 +23,15 @@ import { StoreNames } from '../../../../../store';
 import StoreState from '../../../../../types/store';
 import {
 	setEnhancedJD,
+	setErrorSavingData,
 	setJobDescription,
+	setLoading,
 	setName,
 	setRole,
+	setSelectedJob,
 	setSkillSet,
 } from '../../../../../store/reducers/JobListingReducer';
+import JobService from '../../../../../services/job.service';
 
 export default function EnhancedJD() {
 	const { jobDetail } = useSelector((state: StoreState) => state[StoreNames.JOB_LISTING]);
@@ -35,7 +39,30 @@ export default function EnhancedJD() {
 
 	const { isOpen, onClose, onOpen } = useDisclosure();
 
-	const { job_description, enhanced_description: enhanced_jd } = jobDetail;
+	const { id, job_description, enhanced_description: enhanced_jd } = jobDetail;
+
+	function acceptEnhancedJD() {
+		dispatch(setLoading(true));
+
+		JobService.getInstance()
+			.acceptEnhancedJD(id)
+			.then((result) => {
+				dispatch(
+					setSelectedJob({
+						id: result.id,
+						name: result.name,
+						role: result.role,
+						job_description: result.description,
+						enhanced_description: result.enhanced_description,
+						jd_processed: result.status === 'JD_PROCESSED',
+						skill_set: result.skills,
+						status: result.status,
+					})
+				);
+			})
+			.catch((err) => dispatch(setErrorSavingData(err)))
+			.finally(() => dispatch(setLoading(false)));
+	}
 
 	return (
 		<Box height={'70vh'} overflow='scroll'>
@@ -85,10 +112,7 @@ export default function EnhancedJD() {
 							pb={4}
 						>
 							<ButtonGroup size='sm'>
-								<Button
-									colorScheme='green'
-									onClick={() => dispatch(setEnhancedJD(job_description))}
-								>
+								<Button colorScheme='green' onClick={acceptEnhancedJD}>
 									Accept
 								</Button>
 								<Button colorScheme='red' onClick={onClose}>

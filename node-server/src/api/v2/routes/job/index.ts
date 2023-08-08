@@ -21,6 +21,11 @@ export default class JobRoute {
 		const router = express.Router();
 
 		router
+			.route('/:id/accept-enhanced-job-description')
+			.all(VerifyUser.AuthenticateUser, VerifyUser.IsAdmin)
+			.post(this.jobControllerInstance.acceptEnhancedDescription);
+
+		router
 			.route('/:id')
 			.all(VerifyUser.AuthenticateUser)
 			.get(this.jobControllerInstance.getJob)
