@@ -4,3 +4,4 @@ Flask-RESTx
 openai
 PyPDF2
 python-dotenv
+python-docx
