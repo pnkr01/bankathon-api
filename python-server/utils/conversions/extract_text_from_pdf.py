@@ -15,10 +15,8 @@ def pdf_to_text(pdf_file):
     with open(pdf_file, 'rb') as file:
         pdf_reader = PyPDF2.PdfReader(file)
         all_text = ""
-
         for page in pdf_reader.pages:
             all_text += page.extract_text()
-
     return clean_text(all_text)
 
 def clean_text(text):
