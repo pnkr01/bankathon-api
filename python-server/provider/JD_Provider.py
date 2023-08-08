@@ -8,9 +8,9 @@ def enhance_jd( request_id,job_description):
                 request_id - request id willbe provided here
                 Job Description - job description will be provided here
                  
-                Output should be in the form of object with the following keys - 
-                request_id -  The provided request_id
-                enhanced_jd - The enhanced Job Description
+                Output should be in the form of json object with the following keys -
+                request_id :  The provided request_id
+                enhanced_jd : The enhanced Job Description
                 """},
             {'role': 'user','content': f"""request_id - {request_id} Job Description-{job_description} """}
     ]

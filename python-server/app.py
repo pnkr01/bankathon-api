@@ -5,8 +5,6 @@ from utils.response.cv_response import generate_score
 from dotenv import load_dotenv
 from provider.JD_Provider import enhance_jd
 from helper.api_response import ApiResponse
-from routes.cv_score import cv_score
-
 
 app = Flask(__name__)
 load_dotenv()
