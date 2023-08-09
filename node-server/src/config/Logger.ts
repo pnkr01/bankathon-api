@@ -21,6 +21,7 @@ const logConfiguration = {
 		}),
 		winston.format.printf((info) => {
 			const { level, message, timestamp, label } = info;
+			const msg = typeof message === 'object' ? JSON.stringify(message) : message;
 			const hasLabel = z
 				.string()
 				.nonempty()
@@ -28,9 +29,9 @@ const logConfiguration = {
 				.safeParse(label).success;
 
 			if (!hasLabel) {
-				return `${level}: ${[timestamp]}: ${message}`;
+				return `${level}: ${[timestamp]}: ${msg}`;
 			}
-			return `${level}: ${label}: ${[timestamp]}: ${message}`;
+			return `${level}: ${label}: ${[timestamp]}: ${msg}`;
 		})
 	),
 };

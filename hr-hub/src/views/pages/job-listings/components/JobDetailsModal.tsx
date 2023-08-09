@@ -40,7 +40,7 @@ export default function JobDetailsModal() {
 	} = useSelector((state: StoreState) => state[StoreNames.JOB_LISTING]);
 
 	const onClose = useCallback(() => {
-		navigate('/' + ROUTES.JOB_LISTINGS);
+		navigate(ROUTES.JOB_LISTINGS);
 	}, [navigate]);
 
 	useEffect(() => {
@@ -135,7 +135,7 @@ export default function JobDetailsModal() {
 							status: result.status,
 						})
 					);
-					navigate('/' + ROUTES.JOB_LISTINGS);
+					navigate(ROUTES.JOB_LISTINGS);
 				})
 				.catch((err) => dispatch(setErrorSavingData(err)))
 				.finally(() => dispatch(setLoading(false)));

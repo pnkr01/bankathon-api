@@ -20,8 +20,8 @@ export const COLORS = {
 export const ROUTES = {
 	HOME: '/',
 	LOGIN: '/login',
-	JOB_LISTINGS: 'job-listings',
-	APPLICANTS: 'applicants',
+	JOB_LISTINGS: '/job-listings',
+	APPLICANTS: '/applicants',
 };
 
 export const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;

@@ -20,7 +20,7 @@ export default function ListingCard(props: ListingCardProps) {
 	const dispatch = useDispatch();
 
 	const openProfile = () => {
-		navigate(`/${ROUTES.JOB_LISTINGS}/${id}`);
+		navigate(`${ROUTES.JOB_LISTINGS}/${id}`);
 	};
 
 	const handleCloseListing = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -71,7 +71,7 @@ export default function ListingCard(props: ListingCardProps) {
 					isDisabled={status !== 'ACTIVE'}
 					color='white'
 				>
-					Close Listing
+					Send Email Invites
 				</Button>
 			</Td>
 		</Tr>

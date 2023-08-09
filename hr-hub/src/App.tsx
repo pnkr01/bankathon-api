@@ -7,7 +7,7 @@ import { JobDetailsModal, JobListings } from './views/pages/job-listings';
 import { HomePage } from './views/pages/home';
 import { LoginPage } from './views/pages/login';
 import ProtectedRoute from './views/components/protected-route';
-import { Applicants } from './views/pages/applicants';
+import { ApplicantDetailsModal, Applicants } from './views/pages/applicants';
 
 function App() {
 	return (
@@ -29,7 +29,7 @@ function App() {
 									<Route path=':id' element={<JobDetailsModal />} />
 								</Route>
 								<Route path={ROUTES.APPLICANTS} element={<Applicants />}>
-									{/* <Route path=':id' element={<JobDetailsModal />} /> */}
+									<Route path=':id' element={<ApplicantDetailsModal />} />
 								</Route>
 							</Route>
 

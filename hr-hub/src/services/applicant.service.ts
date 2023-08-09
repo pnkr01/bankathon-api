@@ -18,29 +18,25 @@ export default class ApplicantService {
 	async getApplicants() {
 		try {
 			const { data } = await APIInstance.get('/applicants');
-			if (data.success) {
-				return Promise.resolve(
-					data.applicants as {
+			return Promise.resolve(
+				data.applicants as {
+					id: string;
+					name: string;
+					email: string;
+					phone: string;
+					gender: string;
+					dob: string;
+					resume: string;
+					job: {
 						id: string;
 						name: string;
-						email: string;
-						phone: string;
-						gender: string;
-						dob: string;
-						resume: string;
-						job: {
-							id: string;
-							name: string;
-							role: string;
-							status: string;
-							job_description: string;
-							skills: string[];
-						};
-					}[]
-				);
-			} else {
-				throw new Error('Error fetching applicants');
-			}
+						role: string;
+						status: string;
+						job_description: string;
+						skills: string[];
+					};
+				}[]
+			);
 		} catch (e) {
 			let error = 'Error fetching applicants';
 			if (axios.isAxiosError(e)) {

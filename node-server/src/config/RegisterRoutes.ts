@@ -8,6 +8,7 @@ import ErrorReporter from '../utils/ErrorReporter';
 
 export class RegisterRoutes {
 	static register(app: Express) {
+		this.registerImageRoute(app);
 		this.registerV2Route(app);
 
 		app.get('/api-status', async (req, res) => {
@@ -47,7 +48,7 @@ export class RegisterRoutes {
 	 *  Registers all the routes available in version 1 of the API
 	 */
 	static registerV2Route(app: Express) {
-		app.use('/v2', apiV2);
+		app.use('/', apiV2);
 	}
 
 	/**

@@ -38,7 +38,7 @@ export default function JobListings() {
 	const navigate = useNavigate();
 
 	const addAthlete = () => {
-		navigate('/' + ROUTES.JOB_LISTINGS + '/create');
+		navigate(ROUTES.JOB_LISTINGS + '/create');
 	};
 
 	useEffect(() => {

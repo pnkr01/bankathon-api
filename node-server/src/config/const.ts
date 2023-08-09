@@ -1,6 +1,9 @@
 export const DATABASE_URL = process.env.DATABASE_URL as string;
 export const PYTHON_SERVER_URL = process.env.PYTHON_SERVER_URL as string;
 
+export const EMAIL_API = process.env.EMAIL_API as string;
+export const EMAIL_FROM = process.env.EMAIL_FROM as string;
+
 export const ALLOWED_ORIGINS =
 	process.env.ALLOWED_ORIGINS !== undefined ? process.env.ALLOWED_ORIGINS.split(',') : [];
 

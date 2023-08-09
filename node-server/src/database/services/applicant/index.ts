@@ -33,7 +33,8 @@ export default class ApplicantService {
 		};
 	}
 	static async getApplicants() {
-		const applicants = await ApplicantDB.find().select('user user_details job');
+		const applicants = await ApplicantDB.find().populate('user user_details job');
+
 		return applicants.map((applicant) => ({
 			id: applicant._id,
 			name: applicant.user_details.first_name + ' ' + applicant.user_details.last_name,
