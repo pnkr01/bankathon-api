@@ -26,6 +26,10 @@ const applicantSchema = new mongoose.Schema<IApplicant>({
 		enum: APPLICANT_STATUS,
 		default: APPLICANT_STATUS.APPLIED,
 	},
+	score: {
+		type: Number,
+		default: 0,
+	},
 });
 
 const ApplicantDB = mongoose.model<IApplicant>('Applicant', applicantSchema);

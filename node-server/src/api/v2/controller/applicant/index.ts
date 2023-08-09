@@ -58,18 +58,30 @@ export default class ApplicantController {
 				return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR));
 			}
 
-			await ApplicantService.register({
+			const { applicationDoc } = await ApplicantService.register({
 				user: req.locals.user_id,
 				user_details: user_details._id,
 				job: jobID,
 				resume: uploadedFile.filename,
 			});
 
-			ChatGPTProvider.analyzeCV({
-				job_description: jobService.getDetails().description,
-				resume_file: uploadedFile.path,
-				skills: jobService.getDetails().skills,
-			});
+			try {
+				const score = await ChatGPTProvider.analyzeCV({
+					job_description: jobService.getDetails().description,
+					resume_file: uploadedFile.path,
+					skills: jobService.getDetails().skills,
+				});
+				if (score > 10) {
+					applicationDoc.score = score / 10;
+				} else {
+					applicationDoc.score = score;
+				}
+
+				await applicationDoc.save();
+			} catch (e) {
+				await applicationDoc.remove();
+				throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR);
+			}
 
 			return Respond({
 				res,
@@ -82,7 +94,7 @@ export default class ApplicantController {
 					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
 				}
 			}
-			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR));
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, e));
 		}
 	}
 
