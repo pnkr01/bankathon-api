@@ -165,3 +165,6 @@ dist
 
 
 /**/__pycache__/**/*.*
+
+python-server/uploads/**/*.*
+!python-server/uploads/.gitkeep

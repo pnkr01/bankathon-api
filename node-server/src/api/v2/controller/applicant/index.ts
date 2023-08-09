@@ -38,7 +38,7 @@ export default class ApplicantController {
 		try {
 			uploadedFile = await FileUpload.SingleFileUpload(req, res, fileUploadOptions);
 		} catch (err: unknown) {
-			return next(new APIError(API_ERRORS.COMMON_ERRORS.FILE_UPLOAD_ERROR));
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.FILE_UPLOAD_ERROR, err));
 		}
 		if (uploadedFile === null) {
 			return next(new APIError(API_ERRORS.COMMON_ERRORS.FILE_UPLOAD_ERROR));
@@ -79,6 +79,8 @@ export default class ApplicantController {
 
 				await applicationDoc.save();
 			} catch (e) {
+				console.log(e);
+
 				await applicationDoc.remove();
 				throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR);
 			}
@@ -92,6 +94,8 @@ export default class ApplicantController {
 			if (e instanceof InternalError) {
 				if (e.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
 					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				} else if (e.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.ALREADY_EXISTS)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.ALREADY_EXISTS));
 				}
 			}
 			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, e));

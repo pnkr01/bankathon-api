@@ -2,6 +2,7 @@ import { Types } from 'mongoose';
 import { APPLICANT_STATUS } from '../../../config/const';
 import ApplicantDB from '../../repository/applicant';
 import DateUtils from '../../../utils/DateUtils';
+import InternalError, { INTERNAL_ERRORS } from '../../../errors/internal-errors';
 
 type RegisterApplicantProps = {
 	user: Types.ObjectId;
@@ -13,6 +14,15 @@ type RegisterApplicantProps = {
 export default class ApplicantService {
 	static async register(props: RegisterApplicantProps) {
 		const { user, user_details, job, resume } = props;
+
+		const exists = await ApplicantDB.exists({
+			user,
+			user_details,
+			job,
+		});
+		if (exists) {
+			throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.ALREADY_EXISTS)
+		}
 
 		const application = await ApplicantDB.create({
 			user,

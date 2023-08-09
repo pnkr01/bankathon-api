@@ -45,6 +45,7 @@ export default class JobController {
 							name: job.name,
 							role: job.role,
 							description: job.description,
+							status: job.status,
 							skills: job.skills,
 						})),
 				},
@@ -141,7 +142,10 @@ export default class JobController {
 			name: z.string().optional(),
 			role: z.string().optional(),
 			description: z.string().optional(),
-			skills: z.array(z.string().min(1)).optional(),
+			skills: z
+				.array(z.string().min(1))
+				.transform((arr) => arr.map((item) => item.trim()))
+				.optional(),
 		});
 
 		const validationResult = bodyValidator.safeParse(req.body);

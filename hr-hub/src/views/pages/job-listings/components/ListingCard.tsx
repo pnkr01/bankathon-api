@@ -25,8 +25,9 @@ export default function ListingCard(props: ListingCardProps) {
 
 	const handleCloseListing = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.stopPropagation();
-		JobService.getInstance()
-			.deactivateJob(id)
+		const instance = JobService.getInstance();
+		const promise = status === 'ACTIVE' ? instance.deactivateJob(id) : instance.activateJob(id);
+		promise
 			.then((data) => {
 				dispatch(
 					updateJob({
@@ -68,10 +69,9 @@ export default function ListingCard(props: ListingCardProps) {
 					_hover={{
 						bgColor: 'blue.500',
 					}}
-					isDisabled={status !== 'ACTIVE'}
 					color='white'
 				>
-					Send Email Invites
+					{status === 'ACTIVE' ? 'Close Listing' : 'Send Email Invites'}
 				</Button>
 			</Td>
 		</Tr>
