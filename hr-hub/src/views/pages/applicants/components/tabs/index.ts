@@ -1,1 +1,1 @@
-export { default as JobDetailsTab } from './JobDetailsTab';
+export { default as ApplicantDetails } from './ApplicantDetails';

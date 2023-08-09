@@ -1,8 +1,7 @@
 import openai
-import json
 
 
-def generate_score_reason(job_description, skills, resume_text):
+def analyse_cv(job_description, skills, resume_text):
     user_message = [
         {"role": "system", "content": """You are a HR. You want to hire candidates for your company. you get many resume for that job description Your job is to rank the resumes according to their alignment with the job title, skills, and resumes texts. 
                 Input will be in the following format - 
@@ -20,8 +19,3 @@ def generate_score_reason(job_description, skills, resume_text):
         messages=user_message
     )
     return response['choices'][0]['message']['content']
-
-
-def generate_score(job_title, skills, resume_text):
-    response_data = generate_score_reason(job_title, skills, resume_text)
-    return response_data

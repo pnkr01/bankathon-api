@@ -2,9 +2,6 @@ import { Button, Td, Tr } from '@chakra-ui/react';
 import React from 'react';
 import { COLORS, ROUTES } from '../../../../config/const';
 import { useNavigate } from 'react-router-dom';
-import JobService from '../../../../services/job.service';
-import { useDispatch } from 'react-redux';
-import { updateJob } from '../../../../store/reducers/JobListingReducer';
 import { Applicant } from '../../../../store/types/ApplicantState';
 
 type ListingCardProps = Applicant & {

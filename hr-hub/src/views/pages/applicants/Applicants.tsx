@@ -45,7 +45,7 @@ export default function Applicants() {
 					job: {
 						...applicant.job,
 						enhanced_description: applicant.job.job_description,
-						skill_set: applicant.job.skills.join(','),
+						skill_set: applicant.job.skills?.join(','),
 					},
 				}));
 				dispatch(setApplicants(applicants));
@@ -57,7 +57,7 @@ export default function Applicants() {
 				}, 4000);
 			});
 	}, [dispatch]);
-
+	console.log(filteredApplicants);
 	return (
 		<Box bg={COLORS.PRIMARY_BACKGROUND}>
 			<Navbar

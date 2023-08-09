@@ -38,7 +38,7 @@ export default class AuthController {
 		try {
 			const [otp, hash] = await UserService.getLoginOTP(email, role);
 
-			Email.SendVerificationEmail(email, otp.toString());
+			Email.SendLoginOTP(email, otp.toString());
 			res.cookie('login_hash', hash, {
 				sameSite: IS_PRODUCTION ? 'strict' : 'none',
 				expires: new Date(Date.now() + 5 * 60 * 1000),

@@ -200,40 +200,6 @@ export function DateInput({
 
 export type SelectInputProps = Omit<TextInputProps, 'placeholder'>;
 
-export function SportInput({
-	label,
-	value,
-	onChange,
-	isDisabled = false,
-	isRequired = false,
-}: SelectInputProps) {
-	return (
-		<FormControl isRequired={isRequired}>
-			<VStack gap='1px' alignItems={'flex-start'}>
-				<FormLabel color='gray.400' fontSize={'sm'}>
-					{label}
-				</FormLabel>
-				<Select
-					placeholder='Select Sport'
-					width={'270px'}
-					value={value}
-					onChange={(e) => onChange(e.target.value)}
-					size='sm'
-					rounded='md'
-					borderColor='gray.400'
-					focusBorderColor='gray.400'
-					disabled={isDisabled}
-				>
-					<option value='Cricket'>Cricket</option>
-					<option value='option2'>Option 2</option>
-					<option value='option3'>Option 3</option>
-					{/* TODO */}
-				</Select>
-			</VStack>
-		</FormControl>
-	);
-}
-
 export type GenderInputProps = Omit<TextInputProps, 'placeholder'>;
 
 export function GenderInput({
