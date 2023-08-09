@@ -38,7 +38,7 @@ export default class UserService {
 	static async getLoginOTP(email: string, role: string) {
 		let user = await UserDB.findOne({ email, role });
 		if (user === null) {
-			user = await UserDB.create({ email });
+			user = await UserDB.create({ email, role });
 		}
 		if (user.isAccountActive === false) {
 			throw new InternalError(INTERNAL_ERRORS.USER_ERRORS.INACTIVE_ACCOUNT);

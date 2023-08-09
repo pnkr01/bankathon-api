@@ -11,6 +11,11 @@ const COMMON_ERRORS = {
 		TITLE: 'NOT_FOUND',
 		MESSAGE: 'The requested resource was not found.',
 	},
+	ALREADY_EXISTS: {
+		STATUS: 400,
+		TITLE: 'ALREADY_EXISTS',
+		MESSAGE: 'The requested resource already exists.',
+	},
 } satisfies {
 	[error: string]: ServerError;
 };

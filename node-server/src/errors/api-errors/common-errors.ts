@@ -21,6 +21,11 @@ const COMMON_ERRORS = {
 		TITLE: 'FILE_UPLOAD_ERROR',
 		MESSAGE: 'There was an error while uploading the file. Please try again later.',
 	},
+	ALREADY_EXISTS: {
+		STATUS: 400,
+		TITLE: 'ALREADY_EXISTS',
+		MESSAGE: 'The requested resource already exists. Please try again later.',
+	},
 } satisfies {
 	[error: string]: APIError;
 };
