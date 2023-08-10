@@ -21,7 +21,7 @@ export default class ApplicantService {
 			job,
 		});
 		if (exists) {
-			throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.ALREADY_EXISTS)
+			throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.ALREADY_EXISTS);
 		}
 
 		const application = await ApplicantDB.create({
@@ -42,8 +42,11 @@ export default class ApplicantService {
 			applicationDoc: application,
 		};
 	}
-	static async getApplicants() {
-		const applicants = await ApplicantDB.find().populate('user user_details job');
+
+	static async getApplicants(user?: Types.ObjectId) {
+		const applicants = await ApplicantDB.find({
+			...(user !== undefined && { user: user }),
+		}).populate('user user_details job');
 
 		return applicants.map((applicant) => ({
 			id: applicant._id,
@@ -53,6 +56,7 @@ export default class ApplicantService {
 			gender: applicant.user_details.gender,
 			dob: DateUtils.format(applicant.user_details.dob, 'DD/MM/YYYY'),
 			resume: applicant.resume,
+			status: applicant.status,
 			job: {
 				id: applicant.job._id,
 				name: applicant.job.name,

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { JOB_STATUS, USER_TYPES } from '../../../../config/const';
+import { APPLICANT_STATUS, JOB_STATUS, USER_TYPES } from '../../../../config/const';
 import { Respond } from '../../../../utils/ExpressUtils';
 import APIError, { API_ERRORS } from '../../../../errors/api-errors';
 import { z } from 'zod';
@@ -7,6 +7,7 @@ import JobService from '../../../../database/services/job';
 import { idValidator } from '../../../../utils/Validator';
 import ChatGPTProvider from '../../../../provider/chat-gpt';
 import InternalError, { INTERNAL_ERRORS } from '../../../../errors/internal-errors';
+import ApplicantService from '../../../../database/services/applicant';
 
 export default class JobController {
 	private static instance: JobController;
@@ -270,5 +271,31 @@ export default class JobController {
 			}
 			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, err));
 		}
+	}
+
+	async screenings(req: Request, res: Response) {
+		const applications = await ApplicantService.getApplicants(req.locals.user_id);
+		console.log(applications);
+
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				screenings: applications
+					.filter((application) => {
+						return (
+							application.job.status === JOB_STATUS.ACTIVE ||
+							application.status === APPLICANT_STATUS.SCREENING ||
+							application.status === APPLICANT_STATUS.APPLIED
+						);
+					})
+					.map((application) => ({
+						applicant_id: application.id,
+						job_title: application.job.name,
+						job_role: application.job.role,
+						status: application.status,
+					})),
+			},
+		});
 	}
 }

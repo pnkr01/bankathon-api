@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { IS_PRODUCTION, IS_UAT, USER_TYPES } from '../../../../config/const';
+import { IS_PRODUCTION, USER_TYPES } from '../../../../config/const';
 import { Email } from '../../../../utils/messenger';
 import { Respond } from '../../../../utils/ExpressUtils';
 import APIError, { API_ERRORS } from '../../../../errors/api-errors';
@@ -135,11 +135,11 @@ export default class AuthController {
 
 		res.clearCookie('auth_token', {
 			sameSite: IS_PRODUCTION ? 'strict' : 'none',
-			secure: IS_PRODUCTION || IS_UAT,
+			secure: true,
 		});
 		res.clearCookie('refresh_token', {
 			sameSite: IS_PRODUCTION ? 'strict' : 'none',
-			secure: IS_PRODUCTION || IS_UAT,
+			secure: true,
 		});
 
 		return Respond({

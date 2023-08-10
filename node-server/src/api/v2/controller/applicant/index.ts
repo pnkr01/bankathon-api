@@ -9,6 +9,7 @@ import { Respond } from '../../../../utils/ExpressUtils';
 import InternalError, { INTERNAL_ERRORS } from '../../../../errors/internal-errors';
 import ChatGPTProvider from '../../../../provider/chat-gpt';
 import JobService from '../../../../database/services/job';
+import { JOB_STATUS } from '../../../../config/const';
 
 export default class ApplicantController {
 	private static instance: ApplicantController;
@@ -56,6 +57,8 @@ export default class ApplicantController {
 			const jobService = await JobService.getServiceById(jobID);
 			if (!user_details) {
 				return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR));
+			} else if (jobService.getDetails().status !== JOB_STATUS.ACTIVE) {
+				return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
 			}
 
 			const { applicationDoc } = await ApplicantService.register({
