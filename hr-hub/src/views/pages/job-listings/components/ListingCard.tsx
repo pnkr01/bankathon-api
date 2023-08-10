@@ -71,7 +71,7 @@ export default function ListingCard(props: ListingCardProps) {
 					}}
 					color='white'
 				>
-					{status === 'ACTIVE' ? 'Close Listing' : 'Send Email Invites'}
+					{status === 'INACTIVE' ? 'Send Email Invites' : 'Close Listing'}
 				</Button>
 			</Td>
 		</Tr>

@@ -21,6 +21,7 @@ export const ROUTES = {
 	HOME: '/',
 	LOGIN: '/login',
 	JOB_LISTINGS: '/job-listings',
+	SCREENING: '/screening',
 };
 
 export const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;

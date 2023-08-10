@@ -14,7 +14,10 @@ export default function NavigationDrawer() {
 		const path = location.pathname;
 		if (path.includes(ROUTES.JOB_LISTINGS)) {
 			return ROUTES.JOB_LISTINGS;
+		} else if (path.includes(ROUTES.SCREENING)) {
+			return ROUTES.SCREENING;
 		}
+		return ROUTES.HOME;
 	}, [location.pathname]);
 
 	return (
@@ -40,6 +43,12 @@ export default function NavigationDrawer() {
 						title='Job Listing'
 						isActive={activeMenu === ROUTES.JOB_LISTINGS}
 						navigateTo={ROUTES.JOB_LISTINGS}
+					/>
+					<DrawerMenu
+						icon={APPLICANTS}
+						title='Screening'
+						isActive={activeMenu === ROUTES.SCREENING}
+						navigateTo={ROUTES.SCREENING}
 					/>
 				</VStack>
 			</Box>

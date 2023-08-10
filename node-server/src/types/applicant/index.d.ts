@@ -10,4 +10,12 @@ export default interface IApplicant extends Document {
 	resume: string;
 	status: APPLICANT_STATUS;
 	score: number;
+	questions: Question[];
 }
+
+export type IQuestion = {
+	question: string;
+	reference: string;
+	type: string;
+	tag: string[];
+};

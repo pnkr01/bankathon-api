@@ -2,72 +2,50 @@ import {
 	Alert,
 	AlertIcon,
 	Box,
-	Button,
 	Flex,
 	Table,
 	TableContainer,
 	Tbody,
-	Text,
 	Th,
 	Thead,
 	Tr,
 } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useOutlet } from 'react-router-dom';
-import { COLORS, ROUTES } from '../../../config/const';
+import { useOutlet } from 'react-router-dom';
+import { COLORS } from '../../../config/const';
 import { NAVBAR_SAFE_AREA } from '../../../config/ui';
 import { StoreNames } from '../../../store';
 import {
 	reset,
-	setErrorFetchingJobs,
 	setJobs,
 	setSearchText,
-} from '../../../store/reducers/JobListingReducer';
+	setErrorFetchingJobDetails,
+} from '../../../store/reducers/ScreeningReducer';
 import StoreState from '../../../types/store';
 import { Navbar } from '../../components/navbar';
-import { AddIcon } from '@chakra-ui/icons';
-import ListingCard from './components/ListingCard';
+import ApplicantCard from './components/ApplicantCard';
 import JobService from '../../../services/job.service';
 
-export default function JobListings() {
-	const { filteredJobs, searchText, errorSavingData, errorFetchingJobDetails, errorFetchingJobs } =
-		useSelector((state: StoreState) => state[StoreNames.JOB_LISTING]);
+export default function Screening() {
+	const { filteredJobs, searchText, errorFetchingJobDetails, errorFetchingJobs, errorSavingData } =
+		useSelector((state: StoreState) => state[StoreNames.SCREENING]);
 	const dispatch = useDispatch();
 	const outlet = useOutlet();
-	const navigate = useNavigate();
-
-	const addAthlete = () => {
-		navigate(ROUTES.JOB_LISTINGS + '/create');
-	};
 
 	useEffect(() => {
 		dispatch(reset());
 		JobService.getInstance()
-			.getJobListings()
-			.then((result) => {
-				const jobs = result.map((job: any) => ({
-					id: job.id,
-					name: job.name,
-					role: job.role,
-					status: job.status,
-					job_description: job.description,
-					enhanced_description: job.enhanced_description,
-					skill_set: job.skills.join(','),
-				}));
-				dispatch(setJobs(jobs));
-			})
+			.getScreenings()
+			.then((result) => dispatch(setJobs(result)))
 			.catch((err) => {
-				dispatch(setErrorFetchingJobs(err));
+				dispatch(setErrorFetchingJobDetails(err));
 				setTimeout(() => {
-					dispatch(setErrorFetchingJobs(''));
+					dispatch(setErrorFetchingJobDetails(''));
 				}, 4000);
 			});
 	}, [dispatch]);
-
-	const jobs = useMemo(() => {
-		return filteredJobs.filter((job) => job.status === 'ACTIVE');
-	}, [filteredJobs]);
+	console.log(filteredJobs);
 
 	return (
 		<Box bg={COLORS.PRIMARY_BACKGROUND}>
@@ -83,23 +61,12 @@ export default function JobListings() {
 				}
 			>
 				<Flex alignItems='center' gap='10px'>
-					<Navbar.Title text='Job Listing' />
+					<Navbar.Title text='Applicants' />
 				</Flex>
 			</Navbar>
 
 			<Box {...NAVBAR_SAFE_AREA} bg={COLORS.PRIMARY_BACKGROUND}>
 				<Box marginX='50px'>
-					<Flex justifyContent='flex-end' alignItems='center' marginY='10px'>
-						<Button
-							onClick={addAthlete}
-							colorScheme='blue'
-							variant='outline'
-							leftIcon={<AddIcon />}
-						>
-							<Text>Add</Text>
-						</Button>
-					</Flex>
-
 					<TableContainer
 						bgColor={COLORS.WHITE}
 						rounded='xl'
@@ -113,16 +80,17 @@ export default function JobListings() {
 									<Th color={COLORS.SECONDARY} isNumeric>
 										SN
 									</Th>
-									<Th color={COLORS.SECONDARY}>TITLE</Th>
-									<Th color={COLORS.SECONDARY}>ROLE</Th>
+									<Th color={COLORS.SECONDARY}>JOB TITLE</Th>
+									<Th color={COLORS.SECONDARY}>JOB ROLE</Th>
+									<Th color={COLORS.SECONDARY}>STATUS</Th>
 									<Th color={COLORS.SECONDARY} textAlign={'center'}>
 										ACTION
 									</Th>
 								</Tr>
 							</Thead>
 							<Tbody>
-								{jobs.map((job, index) => (
-									<ListingCard key={index} sno={index + 1} {...job} />
+								{filteredJobs.map((applicants, index) => (
+									<ApplicantCard key={index} sno={index + 1} {...applicants} />
 								))}
 							</Tbody>
 						</Table>

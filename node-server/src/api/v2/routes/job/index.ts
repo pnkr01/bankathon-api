@@ -21,6 +21,20 @@ export default class JobRoute {
 		const router = express.Router();
 
 		router
+			.route('/screenings/:id/questions')
+			.all(VerifyUser.AuthenticateUser, VerifyUser.IsUser)
+			.get(this.jobControllerInstance.screeningQuestion);
+
+		router
+			.route('/screenings/:id/answers')
+			.all(VerifyUser.AuthenticateUser, VerifyUser.IsUser)
+			.post(this.jobControllerInstance.completeScreening);
+		router
+			.route('/screenings')
+			.all(VerifyUser.AuthenticateUser, VerifyUser.IsUser)
+			.get(this.jobControllerInstance.screenings);
+
+		router
 			.route('/:id/active')
 			.all(VerifyUser.AuthenticateUser, VerifyUser.IsAdmin)
 			.post(this.jobControllerInstance.activate);

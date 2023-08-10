@@ -7,6 +7,8 @@ import { JobDetailsModal, JobListings } from './views/pages/job-listings';
 import { HomePage } from './views/pages/home';
 import { LoginPage } from './views/pages/login';
 import ProtectedRoute from './views/components/protected-route';
+import { Screening } from './views/pages/screening';
+import { ScreeningQuestions } from './views/pages/screening_questions';
 
 function App() {
 	return (
@@ -27,6 +29,8 @@ function App() {
 								<Route path={ROUTES.JOB_LISTINGS} element={<JobListings />}>
 									<Route path=':id' element={<JobDetailsModal />} />
 								</Route>
+								<Route path={ROUTES.SCREENING + '/:id'} element={<ScreeningQuestions />} />
+								<Route path={ROUTES.SCREENING} element={<Screening />} />
 							</Route>
 
 							<Route path='*' element={<Navigate to={ROUTES.LOGIN} />} />
