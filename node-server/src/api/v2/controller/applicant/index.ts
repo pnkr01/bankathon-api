@@ -68,25 +68,35 @@ export default class ApplicantController {
 				resume: uploadedFile.filename,
 			});
 
-			try {
-				const score = await ChatGPTProvider.analyzeCV({
-					job_description: jobService.getDetails().description,
-					resume_file: uploadedFile.path,
-					skills: jobService.getDetails().skills,
+			const scorePromise = ChatGPTProvider.analyzeCV({
+				job_description: jobService.getDetails().description,
+				resume_file: uploadedFile.path,
+				skills: jobService.getDetails().skills,
+			});
+			const questionsPromise = ChatGPTProvider.generateScreeningQuestions({
+				job_description: jobService.getDetails().description,
+				job_title: jobService.getDetails().name,
+				resume_file: uploadedFile.path,
+			});
+
+			Promise.all([scorePromise, questionsPromise])
+				.then((values) => {
+					const [score, questions] = values;
+					if (score > 10) {
+						applicationDoc.score = score / 10;
+					} else {
+						applicationDoc.score = score;
+					}
+
+					applicationDoc.questions = questions;
+					applicationDoc.save();
+				})
+				.catch((err) => {
+					logger.error(err.message, {
+						title: 'Error in generating score and questions',
+					});
+					applicationDoc.remove();
 				});
-				if (score > 10) {
-					applicationDoc.score = score / 10;
-				} else {
-					applicationDoc.score = score;
-				}
-
-				await applicationDoc.save();
-			} catch (e) {
-				console.log(e);
-
-				await applicationDoc.remove();
-				throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR);
-			}
 
 			return Respond({
 				res,

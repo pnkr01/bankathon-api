@@ -1,6 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import IApplicant from '../../../types/applicant';
 import { APPLICANT_STATUS } from '../../../config/const';
+
+const questionSchema = new Schema({
+	question: String,
+	reference: String,
+	type: String,
+	tag: [String],
+	answer: String,
+	score: Number,
+});
 
 const applicantSchema = new mongoose.Schema<IApplicant>({
 	user: {
@@ -30,6 +39,7 @@ const applicantSchema = new mongoose.Schema<IApplicant>({
 		type: Number,
 		default: 0,
 	},
+	questions: [questionSchema],
 });
 
 const ApplicantDB = mongoose.model<IApplicant>('Applicant', applicantSchema);

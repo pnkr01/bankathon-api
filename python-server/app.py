@@ -86,12 +86,35 @@ def screening_question():
             if not job_title or not job_description or not resume_text:
                 return ApiResponse(400, {"message": "job_title, job_description and resume_text are required"})
             os.remove(file_path)
-            screening_questions = generate_screening_question(job_title, job_description, resume_text)
+            screening_questions = generate_screening_question(
+                job_title, job_description, resume_text)
             return ApiResponse(200, screening_questions)
         except Exception as e:
             return ApiResponse(500, {"message": "Error extracting PDF data"})
     else:
         return ApiResponse(400, {"message": "File is not a PDF"})
+
+
+## ---------- Evaluate Screening Questions Request --------------##
+@app.post('/screening_result')
+def screening_result():
+    request_data = request.json
+    questions = request_data['questions']
+    answers = request_data['answers']
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": """You are a screening question evaluator. You need to evaluate the answers to screening questions from rank 1 to 10. You will be provided with 10 screening questions and their answers given by the applicant.
+            You have to give the response in the format of list of scores."""},
+            {"role": "user", "content": f"""Questions: {questions}
+            Answers: {answers}"""}
+        ]
+    )['choices'][0]['message']['content']
+
+    return ApiResponse(200, response)
+## ---------- Evaluate Screening Questions Request Ends --------------##
+
+
 ## -----------screening question End---------------##
 if __name__ == '__main__':
     app.run(debug=True)

@@ -67,4 +67,45 @@ export default class ApplicantService {
 			},
 		}));
 	}
+
+	static async getApplicantQuestions(id: Types.ObjectId) {
+		const applicant = await ApplicantDB.findOne(id).populate('user user_details job');
+		if (!applicant) {
+			throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND);
+		}
+
+		return applicant.questions.map((question) => question.question);
+	}
+
+	static async setApplicantAnswers(id: Types.ObjectId, answers: string[]) {
+		const applicant = await ApplicantDB.findOne(id).populate('user user_details job');
+		if (!applicant) {
+			throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND);
+		}
+
+		for (let i = 0; i < applicant.questions.length; i++) {
+			applicant.questions[i].answer = answers[i];
+		}
+
+		await applicant.save();
+		const questions = applicant.questions.map((question) => question.question);
+		return [questions, answers];
+	}
+
+	static async saveResults(id: Types.ObjectId, scores: number[]) {
+		const applicant = await ApplicantDB.findOne(id).populate('user user_details job');
+		if (!applicant) {
+			throw new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND);
+		}
+
+		for (let i = 0; i < applicant.questions.length; i++) {
+			applicant.questions[i].score = scores[i];
+		}
+
+		const totalScore = scores.reduce((a, b) => a + b, 0);
+		applicant.score = totalScore;
+		applicant.status = APPLICANT_STATUS.SCREENING_COMPLETED;
+
+		await applicant.save();
+	}
 }

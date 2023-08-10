@@ -14,6 +14,8 @@ export default async function enhanceJobDescription(id: string, description: str
 			enhanced_description: data.enhanced_jd,
 		});
 	} catch (e) {
+		console.log(e);
+
 		return Promise.reject(new InternalError(INTERNAL_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR));
 	}
 }

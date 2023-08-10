@@ -7,10 +7,14 @@ import FormData from 'form-data';
 type Props = {
 	job_description: string;
 	resume_file: string;
-	skills: string[];
+	job_title: string;
 };
 
-export default async function analyzeCV({ job_description, skills, resume_file }: Props) {
+export default async function generateScreeningQuestions({
+	job_description,
+	job_title,
+	resume_file,
+}: Props) {
 	const formData = new FormData();
 	formData.append(
 		'file',
@@ -18,14 +22,26 @@ export default async function analyzeCV({ job_description, skills, resume_file }
 		Math.round(Math.random() * 1000000).toString() + '-resume.pdf'
 	);
 	formData.append('job_description', job_description);
-	formData.append('skills', skills.join(','));
+	formData.append('job_title', job_title);
 
 	try {
-		const { data } = await axios.post(`${PYTHON_SERVER_URL}/analyze_cv`, formData, {
+		const { data } = await axios.post(`${PYTHON_SERVER_URL}/screening_question`, formData, {
 			headers: formData.getHeaders(),
 		});
 
-		return Promise.resolve(Number(data['score']));
+		return Promise.resolve(
+			data.map((item: any) => ({
+				question: item.Question as string,
+				reference: item.Reference as string,
+				type: item.Type as string,
+				tag: item.Tag as string[],
+			})) as {
+				question: string;
+				reference: string;
+				type: string;
+				tag: string[];
+			}[]
+		);
 	} catch (e) {
 		console.log(e);
 

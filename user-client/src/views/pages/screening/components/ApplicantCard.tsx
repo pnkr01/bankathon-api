@@ -39,6 +39,7 @@ export default function ApplicantCard(props: ListingCardProps) {
 						bgColor: 'red.500',
 					}}
 					color='white'
+					isDisabled={status !== 'SCREENING'}
 				>
 					Start
 				</Button>

@@ -275,7 +275,6 @@ export default class JobController {
 
 	async screenings(req: Request, res: Response) {
 		const applications = await ApplicantService.getApplicants(req.locals.user_id);
-		console.log(applications);
 
 		return Respond({
 			res,
@@ -297,5 +296,84 @@ export default class JobController {
 					})),
 			},
 		});
+	}
+
+	async screeningQuestion(req: Request, res: Response, next: NextFunction) {
+		const [isIDValid, applicantID] = idValidator(req.params.id);
+
+		if (!isIDValid) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
+		}
+
+		try {
+			const questions = await ApplicantService.getApplicantQuestions(applicantID);
+			return Respond({
+				res,
+				status: 200,
+				data: {
+					questions,
+				},
+			});
+		} catch (e) {
+			if (e instanceof InternalError) {
+				if (e.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				} else if (e.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.ALREADY_EXISTS)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.ALREADY_EXISTS));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, e));
+		}
+	}
+
+	async completeScreening(req: Request, res: Response, next: NextFunction) {
+		const [isIDValid, applicantID] = idValidator(req.params.id);
+
+		const answersValidator = z.object({
+			answers: z.array(z.string()),
+		});
+
+		const validationResult = answersValidator.safeParse(req.body);
+
+		if (!isIDValid || validationResult.success === false) {
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INVALID_FIELDS));
+		}
+
+		const answers = validationResult.data.answers;
+
+		try {
+			const [questions, savedAnswers] = await ApplicantService.setApplicantAnswers(
+				applicantID,
+				answers
+			);
+
+			ChatGPTProvider.screeningResult(questions, savedAnswers)
+				.then((result) => {
+					logger.info('Calculation Done. ', {
+						title: 'Screening result:',
+					});
+					ApplicantService.saveResults(applicantID, result);
+				})
+				.catch((err) => {
+					logger.error(err, {
+						title: 'Error in screening result:',
+					});
+				});
+
+			return Respond({
+				res,
+				status: 200,
+				data: {},
+			});
+		} catch (e) {
+			if (e instanceof InternalError) {
+				if (e.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.NOT_FOUND)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.NOT_FOUND));
+				} else if (e.isSameInstanceof(INTERNAL_ERRORS.COMMON_ERRORS.ALREADY_EXISTS)) {
+					return next(new APIError(API_ERRORS.COMMON_ERRORS.ALREADY_EXISTS));
+				}
+			}
+			return next(new APIError(API_ERRORS.COMMON_ERRORS.INTERNAL_SERVER_ERROR, e));
+		}
 	}
 }

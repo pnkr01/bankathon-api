@@ -45,6 +45,8 @@ export default function Screening() {
 				}, 4000);
 			});
 	}, [dispatch]);
+	console.log(filteredJobs);
+
 	return (
 		<Box bg={COLORS.PRIMARY_BACKGROUND}>
 			<Navbar
