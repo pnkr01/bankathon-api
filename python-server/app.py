@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from utils.conversions.extract_text_from_pdf import pdf_to_text
 from provider.JD_Provider import enhance_jd
 from provider.CV_Analyzer import analyse_cv
+from utils.screening.screening_question import generate_screening_question
 from helper.api_response import ApiResponse
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
@@ -63,6 +64,34 @@ def analyze_cv():
         return ApiResponse(400, {"message": "File is not a PDF"})
 
 
-## -----------Anaylyze Resume End---------------##
+## -----------Anaylyze Resume Ends---------------##
+
+## -----------screening question Starts---------------##
+@app.post('/screening_question')
+def screening_question():
+    if 'file' not in request.files:
+        return app.response_class(ApiResponse(400, {"message": "No file in request file"}))
+    file = request.files['file']
+    if file.filename == '' or not allowed_file(file.filename):
+        return app.response_class(ApiResponse(400, {"message": "No file in request file"}))
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(file_path)
+    if file.filename.endswith('.pdf'):
+        try:
+            resume_text = pdf_to_text(file_path)
+            job_description = request.form.get('job_description')
+            job_title = request.form.get('job_title')
+            if not job_title or not job_description or not resume_text:
+                return ApiResponse(400, {"message": "job_title, job_description and resume_text are required"})
+            os.remove(file_path)
+            screening_questions = generate_screening_question(job_title, job_description, resume_text)
+            return ApiResponse(200, screening_questions)
+        except Exception as e:
+            return ApiResponse(500, {"message": "Error extracting PDF data"})
+    else:
+        return ApiResponse(400, {"message": "File is not a PDF"})
+## -----------screening question End---------------##
 if __name__ == '__main__':
     app.run(debug=True)
