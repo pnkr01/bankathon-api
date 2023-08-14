@@ -18,7 +18,6 @@ def enhance_jd(request_id, job_description):
         model="gpt-4",
         messages=user_message
     )
-
     return response['choices'][0]['message']['content']
 
 

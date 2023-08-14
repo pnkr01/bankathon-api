@@ -24,6 +24,7 @@ const initialState: ApplicantsState = {
 			enhanced_description: '',
 			skill_set: '',
 		},
+		score: undefined,
 	},
 
 	errorFetchingApplicants: '',

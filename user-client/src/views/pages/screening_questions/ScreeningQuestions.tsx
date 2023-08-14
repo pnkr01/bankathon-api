@@ -18,16 +18,17 @@ import {
 	VStack,
 	useSteps,
 } from '@chakra-ui/react';
-import { COLORS } from '../../../config/const';
+import { COLORS, ROUTES } from '../../../config/const';
 import Webcam from 'react-webcam';
 import { steps } from 'framer-motion';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useQuestions } from '../../../hooks';
 import { LoadingDocsDialog } from '../../components/dialog';
 import { RECORDING } from '../../../assets/Lottie';
 
 export default function ScreeningQuestions() {
 	const { id: screeningID } = useParams<{ id: string }>();
+	const navigate = useNavigate();
 	const webcamRef = React.useRef<any>(null);
 	const mediaRecorderRef = React.useRef<any>(null);
 	const [capturing, setCapturing] = React.useState(false);
@@ -167,7 +168,7 @@ export default function ScreeningQuestions() {
 								Skip Question
 							</Button>
 							<Button
-								onClick={handleStartCaptureClick}
+								onClick={() => navigate(ROUTES.HOME)}
 								width='full'
 								bgColor='blue.400'
 								_hover={{

@@ -20,6 +20,7 @@ export type Applicant = {
 	dob: string;
 	resume: string;
 	job: Job;
+	score: number | undefined;
 };
 
 export default JobListingState;

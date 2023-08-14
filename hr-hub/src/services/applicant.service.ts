@@ -35,6 +35,7 @@ export default class ApplicantService {
 						job_description: string;
 						skills: string[];
 					};
+					score: number;
 				}[]
 			);
 		} catch (e) {
