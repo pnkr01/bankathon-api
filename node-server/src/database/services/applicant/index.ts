@@ -65,6 +65,7 @@ export default class ApplicantService {
 				job_description: applicant.job.description,
 				skills: applicant.job.skills,
 			},
+			score: applicant.status >= APPLICANT_STATUS.SCREENING_COMPLETED ? applicant.score : undefined,
 		}));
 	}
 

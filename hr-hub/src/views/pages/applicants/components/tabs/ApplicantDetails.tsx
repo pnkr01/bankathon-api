@@ -17,6 +17,7 @@ export default function ApplicantDetailsTab() {
 		gender,
 		resume,
 		job: { name: job_title, role: job_role },
+		score,
 	} = applicantDetail;
 
 	const openResume = () => {
@@ -64,6 +65,11 @@ export default function ApplicantDetailsTab() {
 						Download Screening Questions
 					</Button>
 				</HStack>
+				{score !== undefined && (
+					<HStack spacing='50px' width='full' marginTop={'20px'}>
+						<TextInput label='Score (out of 100)' value={score.toString()} />
+					</HStack>
+				)}
 			</VStack>
 		</Box>
 	);
